@@ -1,0 +1,23 @@
+class Father{
+     int age;
+     void getage(){
+	     Print(a);
+     }
+}
+
+class Child {
+      string name;
+      class father f;
+}
+
+class Main {
+      static void main(){
+        class Child c;
+        c=new Child();
+        class Child c1;
+        class Child c2;
+        c1=dcopy(c);
+        c2=scopy(c);
+   }
+}
+

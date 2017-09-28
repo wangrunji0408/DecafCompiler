@@ -1,0 +1,29 @@
+program
+    class Father <empty>
+        vardef age inttype
+        func getage voidtype
+            formals
+            stmtblock
+                print
+                    varref a
+    class Child <empty>
+        vardef name stringtype
+        vardef f classtype father
+    class Main <empty>
+        static func main voidtype
+            formals
+            stmtblock
+                vardef c classtype Child
+                assign
+                    varref c
+                    newobj Child
+                vardef c1 classtype Child
+                vardef c2 classtype Child
+                assign
+                    varref c1
+                    dcopy
+                        varref c
+                assign
+                    varref c2
+                    scopy
+                        varref c

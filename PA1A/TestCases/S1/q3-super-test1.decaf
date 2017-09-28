@@ -1,0 +1,23 @@
+class Father{
+     int age;
+     void getage(){
+	Print("age is 50");
+     }
+}
+
+class Child extends Father{
+      int age;
+      void getage(){
+	  super.getage();
+      }
+}
+
+class Main {
+      static void main(){
+	    class Father f;
+        class Child c;
+        f=new Father();
+        c=new Child();
+        c.getage();
+   }
+}

@@ -1,0 +1,8 @@
+//syntax error: imaginary part must be {integer}j
+class Main {
+    static void main(){
+	complex a;
+        a=2+3.3j;
+        PrintComp(a);
+    }
+}

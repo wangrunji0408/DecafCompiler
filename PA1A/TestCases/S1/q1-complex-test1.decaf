@@ -1,0 +1,11 @@
+class Main{
+    static void main(){
+        complex a;
+        a=1+2j;
+        int re;
+        int im;
+        re=@a;
+        im=$a;
+        Print(re,im);
+    }
+}

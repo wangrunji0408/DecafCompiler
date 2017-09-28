@@ -1,0 +1,45 @@
+program
+    class Main <empty>
+        static func main voidtype
+            formals
+            stmtblock
+                vardef a inttype
+                assign
+                    varref a
+                    readint
+                vardef b inttype
+                assign
+                    varref b
+                    intconst 20
+                do
+                    branches
+                        branch
+                            gtr
+                                add
+                                    varref a
+                                    varref b
+                                intconst 30
+                            print
+                                stringconst "a+b>30"
+                        branch
+                            les
+                                varref a
+                                intconst 20
+                            print
+                                stringconst "a<20"
+                        branch
+                            boolconst true
+                            print
+                                stringconst "true"
+                        branch
+                            gtr
+                                varref b
+                                intconst 10
+                            stmtblock
+                                assign
+                                    varref b
+                                    add
+                                        varref a
+                                        varref b
+                                print
+                                    varref b

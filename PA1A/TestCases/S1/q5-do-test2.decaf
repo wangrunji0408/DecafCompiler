@@ -1,0 +1,13 @@
+class Main {
+    static void main(){
+    	int a;
+	a= ReadInteger();
+	int b;
+        b=20;
+        do a+b>30: Print("a+b>30");|||
+           a<20:Print("a<20");|||
+           true:Print("true");|||
+           b>10:{b=a+b;Print(b);}
+        od;
+    }
+}

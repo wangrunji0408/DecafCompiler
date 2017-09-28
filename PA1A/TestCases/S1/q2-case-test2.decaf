@@ -1,0 +1,12 @@
+// syntax error: case expression has no default branch
+class Main {
+    static void main(){
+    	int n;
+    	n = ReadInteger();
+    	return case(n){
+    	     1:2+3;
+             2:3+4;
+             3:4+5;
+	};
+    }
+}

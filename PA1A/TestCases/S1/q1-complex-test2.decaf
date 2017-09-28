@@ -1,0 +1,12 @@
+class Main{
+    static void main(){
+	int a;
+        a=100;  
+        complex b;
+        b=#a;
+
+        complex c;
+        c=#200;
+    
+    }
+}

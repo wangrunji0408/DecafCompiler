@@ -1,0 +1,9 @@
+// syntax error: at least one branch is needed for do-loop
+class Main {
+    static void main(){
+	int a;
+        a = ReadInteger();
+        do
+        od;
+    }
+}

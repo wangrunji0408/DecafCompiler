@@ -1,0 +1,29 @@
+program
+    class Father <empty>
+        vardef age inttype
+        func getage voidtype
+            formals
+            stmtblock
+                print
+                    stringconst "age is 50"
+    class Child Father
+        vardef age inttype
+        func getage voidtype
+            formals
+            stmtblock
+                call getage
+                    super
+    class Main <empty>
+        static func main voidtype
+            formals
+            stmtblock
+                vardef f classtype Father
+                vardef c classtype Child
+                assign
+                    varref f
+                    newobj Father
+                assign
+                    varref c
+                    newobj Child
+                call getage
+                    varref c

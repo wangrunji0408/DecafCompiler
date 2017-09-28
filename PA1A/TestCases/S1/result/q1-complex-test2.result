@@ -1,0 +1,19 @@
+program
+    class Main <empty>
+        static func main voidtype
+            formals
+            stmtblock
+                vardef a inttype
+                assign
+                    varref a
+                    intconst 100
+                vardef b comptype
+                assign
+                    varref b
+                    compcast
+                        varref a
+                vardef c comptype
+                assign
+                    varref c
+                    compcast
+                        intconst 200

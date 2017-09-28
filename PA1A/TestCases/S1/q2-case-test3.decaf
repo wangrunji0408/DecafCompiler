@@ -1,0 +1,11 @@
+class Main {
+    static void main (){
+    	int n;
+    	n = ReadInteger();
+        int b;
+        b=case(n){
+        default: 2+3;
+   };
+}
+}
+
