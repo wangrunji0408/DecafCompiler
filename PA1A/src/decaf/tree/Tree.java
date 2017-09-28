@@ -97,7 +97,7 @@ public abstract class Tree {
     /**
      * Synchronized statements, of type Synchonized.
      */
-    public static final int SYNCHRONIZED = CASE + 1;
+    public static final int SYNCHRONIZED = LABELLED + 1;
 
     /**
      * Try statements, of type Try.
