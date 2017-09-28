@@ -70,6 +70,7 @@ WHITESPACE			= ([ \t]+)
 "return"			{ return keyword(Parser.RETURN);		}
 "break"				{ return keyword(Parser.BREAK);			}
 "Print"				{ return keyword(Parser.PRINT);			}
+"PrintComp"			{ return keyword(Parser.PRINTCOMP);		}
 "ReadInteger"		{ return keyword(Parser.READ_INTEGER);	}
 "ReadLine"			{ return keyword(Parser.READ_LINE);		}
 "static"			{ return keyword(Parser.STATIC);		}

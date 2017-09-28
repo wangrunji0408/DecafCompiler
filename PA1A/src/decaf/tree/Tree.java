@@ -283,7 +283,8 @@ public abstract class Tree {
     public static final int READINTEXPR = THISEXPR + 1;
     public static final int READLINEEXPR = READINTEXPR + 1;
     public static final int PRINT = READLINEEXPR + 1;
-    
+    public static final int PRINTCOMP = PRINT + 1;
+
     /**
      * Tags for Literal and TypeLiteral
      */
@@ -673,6 +674,34 @@ public abstract class Tree {
     			e.printTo(pw);
     		}
     		pw.decIndent();
+        }
+    }
+
+    /**
+     * A return statement.
+     */
+    public static class PrintComp extends Tree {
+
+        public List<Expr> exprs;
+
+        public PrintComp(List<Expr> exprs, Location loc) {
+            super(PRINT, loc);
+            this.exprs = exprs;
+        }
+
+        @Override
+        public void accept(Visitor v) {
+            v.visitPrintComp(this);
+        }
+
+        @Override
+        public void printTo(IndentPrintWriter pw) {
+            pw.println("printcomp");
+            pw.incIndent();
+            for (Expr e : exprs) {
+                e.printTo(pw);
+            }
+            pw.decIndent();
         }
     }
 
@@ -1418,6 +1447,10 @@ public abstract class Tree {
         }
 
         public void visitPrint(Print that) {
+            visitTree(that);
+        }
+
+        public void visitPrintComp(PrintComp that) {
             visitTree(that);
         }
 

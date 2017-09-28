@@ -24,7 +24,7 @@ import java.util.*;
 %Jnodebug
 %Jnoconstruct
 
-%token COMPLEX
+%token COMPLEX PRINTCOMP
 %token '@' '$' '#'
 %token VOID   BOOL  INT   STRING  CLASS 
 %token NULL   EXTENDS     THIS     WHILE   FOR   
@@ -199,6 +199,7 @@ Stmt		    :	VariableDef
                 |	ForStmt
                 |	ReturnStmt ';'
                 |	PrintStmt ';'
+                |	PrintCompStmt ';'
                 |	BreakStmt ';'
                 |	StmtBlock
                 ;
@@ -435,6 +436,11 @@ PrintStmt       :	PRINT '(' ExprList ')'
 					{
 						$$.stmt = new Print($3.elist, $1.loc);
 					}
+                ;
+PrintCompStmt   :	PRINTCOMP '(' ExprList ')'
+                    {
+                        $$.stmt = new PrintComp($3.elist, $1.loc);
+                    }
                 ;
 
 %%
