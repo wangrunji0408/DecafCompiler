@@ -25,6 +25,7 @@ import java.util.*;
 %Jnoconstruct
 
 %token COMPLEX
+%token '@' '$' '#'
 %token VOID   BOOL  INT   STRING  CLASS 
 %token NULL   EXTENDS     THIS     WHILE   FOR   
 %token IF     ELSE        RETURN   BREAK   NEW
@@ -41,7 +42,7 @@ import java.util.*;
 %nonassoc LESS_EQUAL GREATER_EQUAL '<' '>'
 %left  '+' '-'
 %left  '*' '/' '%'  
-%nonassoc UMINUS '!' 
+%nonassoc UMINUS '!' '@' '$' '#'
 %nonassoc '[' '.' 
 %nonassoc ')' EMPTY
 %nonassoc ELSE
@@ -314,6 +315,18 @@ Expr            :	LValue
                 |	'!' Expr
                 	{
                 		$$.expr = new Tree.Unary(Tree.NOT, $2.expr, $1.loc);
+                	}
+                |	'@' Expr
+                	{
+                		$$.expr = new Tree.Unary(Tree.RE, $2.expr, $1.loc);
+                	}
+                |	'$' Expr
+                    {
+                        $$.expr = new Tree.Unary(Tree.IM, $2.expr, $1.loc);
+                    }
+                |	'#' Expr
+                	{
+                		$$.expr = new Tree.Unary(Tree.COMPCAST, $2.expr, $1.loc);
                 	}
                 |	READ_INTEGER '(' ')'
                 	{

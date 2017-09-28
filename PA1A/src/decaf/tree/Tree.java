@@ -240,7 +240,10 @@ public abstract class Tree {
     public static final int POS = ERRONEOUS + 1;
     public static final int NEG = POS + 1;
     public static final int NOT = NEG + 1;
-    public static final int COMPL = NOT + 1;
+    public static final int RE = NOT + 1;
+    public static final int IM = RE + 1;
+    public static final int COMPCAST = IM + 1;
+    public static final int COMPL = COMPCAST + 1;
     public static final int PREINC = COMPL + 1;
     public static final int PREDEC = PREINC + 1;
     public static final int POSTINC = PREDEC + 1;
@@ -877,6 +880,15 @@ public abstract class Tree {
     		case NOT:
     			unaryOperatorToString(pw, "not");
     			break;
+            case RE:
+                unaryOperatorToString(pw, "re");
+                break;
+            case IM:
+                unaryOperatorToString(pw, "im");
+                break;
+            case COMPCAST:
+                unaryOperatorToString(pw, "compcast");
+                break;
 			}
     	}
    }
