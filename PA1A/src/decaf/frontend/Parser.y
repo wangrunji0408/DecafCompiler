@@ -24,6 +24,7 @@ import java.util.*;
 %Jnodebug
 %Jnoconstruct
 
+%token COMPLEX
 %token VOID   BOOL  INT   STRING  CLASS 
 %token NULL   EXTENDS     THIS     WHILE   FOR   
 %token IF     ELSE        RETURN   BREAK   NEW
@@ -78,6 +79,10 @@ Type            :	INT
 					{
 						$$.type = new Tree.TypeIdent(Tree.INT, $1.loc);
 					}
+				|   COMPLEX
+				    {
+				        $$.type = new Tree.TypeIdent(Tree.COMPLEX, $1.loc);
+				    }
                 |	VOID
                 	{
                 		$$.type = new Tree.TypeIdent(Tree.VOID, $1.loc);

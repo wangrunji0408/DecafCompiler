@@ -36,6 +36,7 @@ HEX_DIGIT 			= ([0-9A-Fa-f])
 HEX_INTEGER			= (0[Xx]{HEX_DIGIT}+)
 DEC_INTEGER			= ({DIGIT}+)
 INTEGER				= ({HEX_INTEGER}|{DEC_INTEGER})
+IMG                 = ({INTEGER}"j")
 IDENTIFIER			= ([A-Za-z][_0-9A-Za-z]*)
 SIMPLE_OPERATOR		= ("+"|"-"|"*"|"/"|"%"|"="|"<"|">"|"."|","|";"|"!"|"("|")"|"["|"]"|"{"|"}")
 S_COMMENT			= ("//"[^\r\n]*{NEWLINE})
@@ -53,6 +54,7 @@ WHITESPACE			= ([ \t]+)
 
 	// 识别关键字的规则 
 "void"				{ return keyword(Parser.VOID);			}
+"complex"           { return keyword(Parser.COMPLEX);       }
 "int"				{ return keyword(Parser.INT);			}
 "bool"				{ return keyword(Parser.BOOL);			}
 "string"			{ return keyword(Parser.STRING);		}
@@ -83,9 +85,10 @@ WHITESPACE			= ([ \t]+)
 {SIMPLE_OPERATOR}	{ return operator((int)yycharat(0));	}
 
 	// 识别常数的规则
-"true"				{ return boolConst(true);										}
-"false"				{ return boolConst(false);										}
+"true"				{ return boolConst(true);				}
+"false"				{ return boolConst(false);				}
 {INTEGER}			{ return intConst(yytext());			}
+{IMG}               { return imgConst(yytext());            }
 <YYINITIAL>\"		{ sloc = getLocation();		  
 					  yybegin(S);
 					  buffer = new StringBuilder();								    }
