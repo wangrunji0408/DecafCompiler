@@ -278,7 +278,9 @@ public abstract class Tree {
     public static final int CALLEXPR = NULL + 1;
     public static final int THISEXPR = CALLEXPR + 1;
     public static final int SUPEREXPR = THISEXPR + 1;
-    public static final int READINTEXPR = SUPEREXPR + 1;
+    public static final int DCOPYEXPR = SUPEREXPR + 1;
+    public static final int SCOPYEXPR = DCOPYEXPR + 1;
+    public static final int READINTEXPR = SCOPYEXPR + 1;
     public static final int READLINEEXPR = READINTEXPR + 1;
     public static final int PRINT = READLINEEXPR + 1;
     
@@ -1061,6 +1063,52 @@ public abstract class Tree {
         }
     }
 
+    public static class DCopy extends Expr {
+
+        Expr expr;
+
+        public DCopy(Expr expr, Location loc) {
+            super(DCOPYEXPR, loc);
+            this.expr = expr;
+        }
+
+        @Override
+        public void accept(Visitor visitor) {
+            visitor.visitDCopy(this);
+        }
+
+        @Override
+        public void printTo(IndentPrintWriter pw) {
+            pw.println("dcopy");
+            pw.incIndent();
+            expr.printTo(pw);
+            pw.decIndent();
+        }
+    }
+
+    public static class SCopy extends Expr {
+
+        Expr expr;
+
+        public SCopy(Expr expr, Location loc) {
+            super(SCOPYEXPR, loc);
+            this.expr = expr;
+        }
+
+        @Override
+        public void accept(Visitor visitor) {
+            visitor.visitSCopy(this);
+        }
+
+        @Override
+        public void printTo(IndentPrintWriter pw) {
+            pw.println("scopy");
+            pw.incIndent();
+            expr.printTo(pw);
+            pw.decIndent();
+        }
+    }
+
     /**
       * A type cast.
       */
@@ -1420,6 +1468,14 @@ public abstract class Tree {
         }
 
         public void visitSuperExpr(SuperExpr that) {
+            visitTree(that);
+        }
+
+        public void visitDCopy(DCopy that) {
+            visitTree(that);
+        }
+
+        public void visitSCopy(SCopy that) {
             visitTree(that);
         }
 

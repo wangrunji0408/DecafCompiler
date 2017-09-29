@@ -25,6 +25,7 @@ import java.util.*;
 %Jnoconstruct
 
 %token SUPER
+%token DCOPY SCOPY
 %token VOID   BOOL  INT   STRING  CLASS 
 %token NULL   EXTENDS     THIS     WHILE   FOR   
 %token IF     ELSE        RETURN   BREAK   NEW
@@ -327,6 +328,14 @@ Expr            :	LValue
                 	{
                 		$$.expr = new Tree.SuperExpr($1.loc);
                 	}
+                |	DCOPY '(' Expr ')'
+                    {
+                        $$.expr = new Tree.DCopy($3.expr, $1.loc);
+                    }
+                |	SCOPY '(' Expr ')'
+                    {
+                        $$.expr = new Tree.SCopy($3.expr, $1.loc);
+                    }
                 |	NEW IDENTIFIER '(' ')'
                 	{
                 		$$.expr = new Tree.NewClass($2.ident, $1.loc);
