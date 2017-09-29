@@ -89,10 +89,16 @@ public abstract class Tree {
      */
     public static final int FORLOOP = WHILELOOP + 1;
 
+    public static final int CASE = FORLOOP + 1;
+
+    public static final int ACASE = CASE + 1;
+
+    public static final int DEFAULT = ACASE + 1;
+
     /**
      * Labelled statements, of type Labelled.
      */
-    public static final int LABELLED = FORLOOP + 1;
+    public static final int LABELLED = DEFAULT + 1;
 
     /**
      * Synchronized statements, of type Synchonized.
@@ -707,6 +713,98 @@ public abstract class Tree {
     	public Expr(int tag, Location loc) {
     		super(tag, loc);
     	}
+    }
+
+    /**
+     * A case expr.
+     */
+    public static class Case extends Expr {
+
+        public Expr value;
+        public List<ACase> caseList;
+        public Default _default;
+
+        public Case(Expr value, List<Expr> caseList, Expr _default,
+                Location loc) {
+            super(CASE, loc);
+            this.value = value;
+            this.caseList = (List)caseList;
+            this._default = (Default) _default;
+        }
+
+        @Override
+        public void accept(Visitor v) {
+            v.visitCase(this);
+        }
+
+        @Override
+        public void printTo(IndentPrintWriter pw) {
+            pw.println("cond");
+            pw.incIndent();
+                value.printTo(pw);
+                pw.println("cases");
+                pw.incIndent();
+                for(ACase acase: caseList)
+                    acase.printTo(pw);
+                _default.printTo(pw);
+                pw.decIndent();
+            pw.decIndent();
+        }
+    }
+
+    /**
+     * A acase expr.
+     */
+    public static class ACase extends Expr {
+
+        public Expr key;
+        public Expr value;
+
+        public ACase(Expr key, Expr value, Location loc) {
+            super(ACASE, loc);
+            this.key = key;
+            this.value = value;
+        }
+
+        @Override
+        public void accept(Visitor v) {
+            v.visitACase(this);
+        }
+
+        @Override
+        public void printTo(IndentPrintWriter pw) {
+            pw.println("case");
+            pw.incIndent();
+            key.printTo(pw);
+            value.printTo(pw);
+            pw.decIndent();
+        }
+    }
+
+    /**
+     * A default expr.
+     */
+    public static class Default extends Expr {
+
+        public Expr value;
+
+        public Default(Expr value, Location loc) {
+            super(DEFAULT, loc);
+            this.value = value;
+        }
+
+        @Override
+        public void accept(Visitor v) {
+            v.visitDefault(this);
+        }
+
+        @Override
+        public void printTo(IndentPrintWriter pw) {
+            pw.println("default");
+            pw.incIndent();
+            value.printTo(pw);
+            pw.decIndent();
+        }
     }
 
     /**
@@ -1370,6 +1468,18 @@ public abstract class Tree {
         }
 
         public void visitAssign(Assign that) {
+            visitTree(that);
+        }
+
+        public void visitCase(Case that) {
+            visitTree(that);
+        }
+
+        public void visitACase(ACase that) {
+            visitTree(that);
+        }
+
+        public void visitDefault(Default that) {
             visitTree(that);
         }
 

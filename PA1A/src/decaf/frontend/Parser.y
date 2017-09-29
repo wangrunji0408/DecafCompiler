@@ -24,6 +24,7 @@ import java.util.*;
 %Jnodebug
 %Jnoconstruct
 
+%token CASE DEFAULT
 %token VOID   BOOL  INT   STRING  CLASS 
 %token NULL   EXTENDS     THIS     WHILE   FOR   
 %token IF     ELSE        RETURN   BREAK   NEW
@@ -240,12 +241,39 @@ Call            :	Receiver IDENTIFIER '(' Actuals ')'
 					}
                 ;
 
+ACaseExpr       :   Constant ':' Expr ';'
+                    {
+                        $$.expr = new Tree.ACase($1.expr, $3.expr, $1.loc);
+                    }
+                ;
+
+DefaultExpr     :   DEFAULT ':' Expr ';'
+                    {
+                        $$.expr = new Tree.Default($3.expr, $1.loc);
+                    }
+                ;
+
+ACaseExprList   :	ACaseExprList ACaseExpr
+                    {
+                        $$.elist.add($2.expr);
+                    }
+                |	/* empty */
+                    {
+                        $$ = new SemValue();
+                        $$.elist = new ArrayList<Expr>();
+                    }
+                ;
+
 Expr            :	LValue
 					{
 						$$.expr = $1.lvalue;
 					}
                 |	Call
                 |	Constant
+                |   CASE '(' Expr ')' '{' ACaseExprList DefaultExpr '}'
+                    {
+                        $$.expr = new Tree.Case($3.expr, $6.elist, $7.expr, $1.loc);
+                    }
                 |	Expr '+' Expr
                 	{
                 		$$.expr = new Tree.Binary(Tree.PLUS, $1.expr, $3.expr, $2.loc);
