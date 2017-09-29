@@ -74,10 +74,14 @@ public abstract class Tree {
      */
     public static final int BLOCK = SKIP + 1;
 
+    public static final int DOBRANCH = BLOCK + 1;
+
+    public static final int DOSTMT = DOBRANCH + 1;
+
     /**
      * Do-while loops, of type DoLoop.
      */
-    public static final int DOLOOP = BLOCK + 1;
+    public static final int DOLOOP = DOSTMT + 1;
 
     /**
      * While-loops, of type WhileLoop.
@@ -480,6 +484,69 @@ public abstract class Tree {
     		}
     		pw.decIndent();
     	}
+    }
+
+    /**
+     * A do branch
+     */
+    public static class DoBranch extends Tree {
+
+        public Expr cond;
+        public Tree stmt;
+
+        public DoBranch(Expr cond, Tree stmt, Location loc) {
+            super(DOBRANCH, loc);
+            this.cond = cond;
+            this.stmt = stmt;
+        }
+
+        @Override
+        public void accept(Visitor v) {
+            v.visitDoBranch(this);
+        }
+
+        @Override
+        public void printTo(IndentPrintWriter pw) {
+            pw.println("branch");
+            pw.incIndent();
+            {
+                cond.printTo(pw);
+                stmt.printTo(pw);
+            }
+            pw.decIndent();
+        }
+    }
+
+    /**
+     * A do stat
+     */
+    public static class DoStmt extends Tree {
+
+        public List<DoBranch> branchList;
+
+        public DoStmt(List<Tree> branchList, Location loc) {
+            super(DOSTMT, loc);
+            this.branchList = (List)branchList;
+        }
+
+        @Override
+        public void accept(Visitor v) {
+            v.visitDoStmt(this);
+        }
+
+        @Override
+        public void printTo(IndentPrintWriter pw) {
+            pw.println("do");
+            pw.incIndent();
+            {
+                pw.println("branches");
+                pw.incIndent();
+                for(DoBranch branch: branchList)
+                    branch.printTo(pw);
+                pw.decIndent();
+            }
+            pw.decIndent();
+        }
     }
 
     /**
@@ -1330,6 +1397,14 @@ public abstract class Tree {
         }
 
         public void visitBlock(Block that) {
+            visitTree(that);
+        }
+
+        public void visitDoStmt(DoStmt that) {
+            visitTree(that);
+        }
+
+        public void visitDoBranch(DoBranch that) {
             visitTree(that);
         }
 

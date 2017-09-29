@@ -24,6 +24,7 @@ import java.util.*;
 %Jnodebug
 %Jnoconstruct
 
+%token SPLIT  DO OD
 %token VOID   BOOL  INT   STRING  CLASS 
 %token NULL   EXTENDS     THIS     WHILE   FOR   
 %token IF     ELSE        RETURN   BREAK   NEW
@@ -188,6 +189,7 @@ Stmt		    :	VariableDef
                 			$$.stmt = new Tree.Skip($2.loc);
                 		}
                 	}
+                |   DoStmt ';'
                 |	IfStmt
                 |	WhileStmt
                 |	ForStmt
@@ -367,6 +369,29 @@ ExprList        :	ExprList ',' Expr
                 		$$.elist = new ArrayList<Tree.Expr>();
 						$$.elist.add($1.expr);
                 	}
+                ;
+
+DoBranch        :   Expr ':' Stmt
+                    {
+                        $$.stmt = new Tree.DoBranch($1.expr, $3.stmt, $1.loc);
+                    }
+                ;
+
+DoBranchList    :   DoBranchList SPLIT DoBranch
+                    {
+                        $$.slist.add($3.stmt);
+                    }
+                |   DoBranch
+                    {
+                        $$.slist = new ArrayList<Tree>();
+                        $$.slist.add($1.stmt);
+                    }
+                ;
+
+DoStmt          :	DO DoBranchList OD
+					{
+						$$.stmt = new Tree.DoStmt($2.slist, $1.loc);
+					}
                 ;
     
 WhileStmt       :	WHILE '(' Expr ')' Stmt
