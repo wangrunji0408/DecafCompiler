@@ -277,7 +277,8 @@ public abstract class Tree {
     public static final int NULL = MOD + 1;
     public static final int CALLEXPR = NULL + 1;
     public static final int THISEXPR = CALLEXPR + 1;
-    public static final int READINTEXPR = THISEXPR + 1;
+    public static final int SUPEREXPR = THISEXPR + 1;
+    public static final int READINTEXPR = SUPEREXPR + 1;
     public static final int READLINEEXPR = READINTEXPR + 1;
     public static final int PRINT = READLINEEXPR + 1;
     
@@ -1043,6 +1044,23 @@ public abstract class Tree {
     	}
    }
 
+    public static class SuperExpr extends Expr {
+
+        public SuperExpr(Location loc) {
+            super(SUPEREXPR, loc);
+        }
+
+        @Override
+        public void accept(Visitor visitor) {
+            visitor.visitSuperExpr(this);
+        }
+
+        @Override
+        public void printTo(IndentPrintWriter pw) {
+            pw.println("super");
+        }
+    }
+
     /**
       * A type cast.
       */
@@ -1398,6 +1416,10 @@ public abstract class Tree {
         }
 
         public void visitThisExpr(ThisExpr that) {
+            visitTree(that);
+        }
+
+        public void visitSuperExpr(SuperExpr that) {
             visitTree(that);
         }
 

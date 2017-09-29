@@ -24,6 +24,7 @@ import java.util.*;
 %Jnodebug
 %Jnoconstruct
 
+%token SUPER
 %token VOID   BOOL  INT   STRING  CLASS 
 %token NULL   EXTENDS     THIS     WHILE   FOR   
 %token IF     ELSE        RETURN   BREAK   NEW
@@ -321,6 +322,10 @@ Expr            :	LValue
                 |	THIS
                 	{
                 		$$.expr = new Tree.ThisExpr($1.loc);
+                	}
+                |	SUPER
+                	{
+                		$$.expr = new Tree.SuperExpr($1.loc);
                 	}
                 |	NEW IDENTIFIER '(' ')'
                 	{
