@@ -66,6 +66,8 @@ WHITESPACE			= ([ \t]+)
 "super"				{ return keyword(Parser.SUPER);			}
 "dcopy"				{ return keyword(Parser.DCOPY);			}
 "scopy"				{ return keyword(Parser.SCOPY);			}
+"do"				{ return keyword(Parser.DO);			}
+"od"				{ return keyword(Parser.OD);			}
 "while"				{ return keyword(Parser.WHILE);			}
 "for"				{ return keyword(Parser.FOR);			}
 "if"				{ return keyword(Parser.IF);			}
@@ -88,6 +90,7 @@ WHITESPACE			= ([ \t]+)
 "!="				{ return operator(Parser.NOT_EQUAL);	}
 "&&"				{ return operator(Parser.AND);			}
 "||"				{ return operator(Parser.OR);			}
+"|||"               { return operator(Parser.SPLIT);        }
 {SIMPLE_OPERATOR}	{ return operator((int)yycharat(0));	}
 
 	// 识别常数的规则
@@ -95,7 +98,7 @@ WHITESPACE			= ([ \t]+)
 "false"				{ return boolConst(false);				}
 {INTEGER}			{ return intConst(yytext());			}
 {IMG}               { return imgConst(yytext());            }
-<YYINITIAL>\"		{ sloc = getLocation();		  
+<YYINITIAL>\"		{ sloc = getLocation();
 					  yybegin(S);
 					  buffer = new StringBuilder();								    }
 <S>{NEWLINE}		{ issueError(new NewlineInStrError(sloc, MiscUtils.quote(buffer.toString())));}
