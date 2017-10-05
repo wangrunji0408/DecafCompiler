@@ -1,0 +1,13 @@
+// syntax error: case expression is not constant
+class Main {
+    static void main(){
+        int n;
+        n = ReadInteger();
+        return case(n) {
+            1+2: 3;
+            default: 1;
+        };
+    }
+}
+
+

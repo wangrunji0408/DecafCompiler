@@ -14,3 +14,15 @@ program
                     compcast
                         re
                             varref a
+                vardef b inttype
+                assign
+                    varref b
+                    add
+                        add
+                            add
+                                intconst 1
+                                re
+                                    varref a
+                            im
+                                varref a
+                        intconst 3

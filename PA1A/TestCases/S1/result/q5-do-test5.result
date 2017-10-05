@@ -15,21 +15,21 @@ program
                     branches
                         branch
                             les
-                                varref y
+                                varref a
                                 intconst 10
                             assign
-                                varref y
+                                varref a
                                 add
-                                    varref y
+                                    varref a
                                     intconst 1
                         branch
                             les
-                                varref x
+                                varref b
                                 intconst 10
                             assign
-                                varref x
+                                varref b
                                 add
-                                    varref x
+                                    varref b
                                     intconst 1
                 print
                     varref a

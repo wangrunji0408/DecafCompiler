@@ -1,0 +1,14 @@
+class Main {
+    static void main() {
+        int a;
+        do
+            true:
+                do
+                    true: a = 1; |||
+                    false: a = 2;
+                od; |||
+            false: a = 3;
+        od;
+        Print(a);
+    }
+}

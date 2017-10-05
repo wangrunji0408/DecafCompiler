@@ -1,0 +1,12 @@
+// syntax error: default is not at end
+class Main {
+    static void main(){
+    	int n;
+    	n = ReadInteger();
+    	return case(n){
+    	    1: 1;
+            default: 1;
+            2: 3+4;
+	    };
+    }
+}

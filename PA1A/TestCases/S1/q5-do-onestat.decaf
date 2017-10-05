@@ -1,0 +1,10 @@
+class Main {
+    static void main() {
+	    int a;
+        a = 1;
+        do
+            true: a = 2;
+        od;
+        Print(a);
+    }
+}

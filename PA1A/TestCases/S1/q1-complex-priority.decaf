@@ -2,6 +2,8 @@ class Main{
     static void main(){
         complex a;
         a = 1 + 2j;
-        a = #(@a);
+        a = #@a;
+        int b;
+        b = 1 + @a + $a + 3;
     }
 }

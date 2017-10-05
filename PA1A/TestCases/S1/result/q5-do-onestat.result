@@ -1,0 +1,18 @@
+program
+    class Main <empty>
+        static func main voidtype
+            formals
+            stmtblock
+                vardef a inttype
+                assign
+                    varref a
+                    intconst 1
+                do
+                    branches
+                        branch
+                            boolconst true
+                            assign
+                                varref a
+                                intconst 2
+                print
+                    varref a
