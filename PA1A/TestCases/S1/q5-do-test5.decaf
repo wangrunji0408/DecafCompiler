@@ -1,0 +1,13 @@
+class Main {
+    static void main() {
+	    int a;
+        a = ReadInteger();
+        int b;
+        b = ReadInteger();
+        do
+            y < 10: y = y + 1; |||
+            x < 10: x = x + 1;
+        od;
+        Print(a, b);
+    }
+}

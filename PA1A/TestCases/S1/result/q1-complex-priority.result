@@ -11,5 +11,6 @@ program
                         imgconst 2j
                 assign
                     varref a
-                    neg
-                        imgconst 2j
+                    compcast
+                        re
+                            varref a

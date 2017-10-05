@@ -1,7 +1,7 @@
 class Main{
     static void main(){
         complex a;
-        a=1+2j;
-        a=-0x2j;
+        a = 1 + 2j;
+        a = #(@a);
     }
 }

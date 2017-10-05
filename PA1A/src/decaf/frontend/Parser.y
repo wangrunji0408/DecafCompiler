@@ -47,10 +47,11 @@ import java.util.*;
 %nonassoc LESS_EQUAL GREATER_EQUAL '<' '>'
 %left  '+' '-'
 %left  '*' '/' '%'  
-%nonassoc UMINUS '!' '@' '$' '#'
+%nonassoc UMINUS '!'
 %nonassoc '[' '.' 
 %nonassoc ')' EMPTY
 %nonassoc ELSE
+%nonassoc '@' '$' '#'
 
 %start Program
 
