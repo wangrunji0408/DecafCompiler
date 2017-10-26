@@ -1,0 +1,7 @@
+// syntax error: at least one branch is needed for do-loop
+
+class Main {
+    static void main() {
+        do od;
+    }
+}

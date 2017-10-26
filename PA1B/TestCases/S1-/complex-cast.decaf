@@ -1,0 +1,16 @@
+class Main {
+	static void main() {
+		complex x;
+		x = -1j;
+		int re;
+		int im;
+		re = @x;
+		im = $x;
+		Print(re, "+", im, "j\n");
+		int y;
+        y = 1024;
+		complex z;
+		z = #y;
+		PrintComp(z + y);
+	}
+}

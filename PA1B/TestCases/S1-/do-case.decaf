@@ -1,0 +1,9 @@
+class Main {
+    static void main() {
+        int x; x = ReadInteger();
+        do x < 0: Print(case (x%2) {
+            0:"even";
+            default:"odd";
+        }); ||| x < 10: x=x-1; od;
+    }
+}

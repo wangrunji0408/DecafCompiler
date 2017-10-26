@@ -1,0 +1,8 @@
+// integer 2147483648 is too large
+
+class Main {
+    static void main() {
+        complex x;
+        x = 2147483647 + 2147483648j;
+    }
+}

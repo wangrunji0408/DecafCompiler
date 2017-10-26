@@ -1,0 +1,59 @@
+program
+    class Main <empty>
+        static func dayOfWeek stringtype
+            formals
+                vardef n inttype
+            stmtblock
+                return
+                    cond
+                        varref n
+                        cases
+                            case
+                                intconst 1
+                                stringconst "Monday"
+                            case
+                                intconst 2
+                                stringconst "Tuesday"
+                            case
+                                intconst 3
+                                stringconst "Wednesday"
+                            case
+                                intconst 4
+                                stringconst "Thursday"
+                            case
+                                intconst 5
+                                stringconst "Friday"
+                            case
+                                intconst 6
+                                stringconst "Saturday"
+                            case
+                                intconst 7
+                                stringconst "Sunday"
+                            default
+                                stringconst "<unknown>"
+        static func isOdd booltype
+            formals
+                vardef n inttype
+            stmtblock
+                return
+                    cond
+                        mod
+                            varref n
+                            intconst 2
+                        cases
+                            case
+                                intconst 0
+                                boolconst true
+                            default
+                                boolconst false
+        static func main voidtype
+            formals
+            stmtblock
+                print
+                    call dayOfWeek
+                        <empty>
+                        intconst 4
+                print
+                    call isOdd
+                        <empty>
+                        intconst 3

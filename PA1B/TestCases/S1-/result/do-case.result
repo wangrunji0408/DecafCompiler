@@ -1,0 +1,35 @@
+program
+    class Main <empty>
+        static func main voidtype
+            formals
+            stmtblock
+                vardef x inttype
+                assign
+                    varref x
+                    readint
+                do
+                    branches
+                        branch
+                            les
+                                varref x
+                                intconst 0
+                            print
+                                cond
+                                    mod
+                                        varref x
+                                        intconst 2
+                                    cases
+                                        case
+                                            intconst 0
+                                            stringconst "even"
+                                        default
+                                            stringconst "odd"
+                        branch
+                            les
+                                varref x
+                                intconst 10
+                            assign
+                                varref x
+                                sub
+                                    varref x
+                                    intconst 1

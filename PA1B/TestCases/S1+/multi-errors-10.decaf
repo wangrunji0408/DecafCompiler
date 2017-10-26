@@ -1,0 +1,20 @@
+class Main {
+    static string dayOfWeek(int n) {
+		return case (n) {
+			1: "Monday";
+			2: "Tuesday";
+			3: "Wednesday";
+			4: "Thursday";
+			5: "Friday";
+			6: "Saturday";
+			7: "Sunday";
+            default: ; // error 1: missing expr after ':'
+        };
+	}
+
+    static void main() {
+        int n;
+        n = 1;
+        do n < 10 : { Print(dayOfWeek(n)); n = n + 1; } od // error 2: missing ';'
+    }
+}

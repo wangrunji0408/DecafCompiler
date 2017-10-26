@@ -1,0 +1,10 @@
+class Main {
+    static void main() {
+        int n;
+        complex z;
+        z = -1j;
+        int x;
+        x = ReadInteger();
+        do x<1: do x<2: do x<3: n=@z; od; od; ||| x<10:Print("2333");od;
+    }
+}

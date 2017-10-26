@@ -1,0 +1,9 @@
+class Main {
+    static int alwaysOne(int n) {
+        return case(n){default:1;};
+    }
+
+    static void main() {
+        Print(alwaysOne(100));
+    }
+}

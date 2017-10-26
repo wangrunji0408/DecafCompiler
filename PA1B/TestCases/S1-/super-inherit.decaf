@@ -1,0 +1,26 @@
+class Base {
+    void f() { Print("Base:f"); }
+}
+
+class A extends Base {
+    void f() { Print("A:f"); }
+}
+
+class B extends Base {
+    void f() { Print("B:f"); }
+    void g() { Print("B:g"); super.f(); }
+}
+
+class Main {
+    static void main() {
+        class Base base;
+        class A a;
+        class B b;
+        base = new Base();
+        a = new A();
+        b = new B();
+        a.f();
+        b.f();
+        b.g();
+    }
+}

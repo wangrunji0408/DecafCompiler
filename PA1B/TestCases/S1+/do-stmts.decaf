@@ -1,0 +1,14 @@
+// syntax error: ONLY ONE stmt is allowed after ':'
+
+class Main {
+    static void main() {
+        int x;
+        int y;
+        x = 0;
+        y = 0;
+
+        do
+            x < 100: x=x+1; |||
+            y < 100: y=y+1; Print("y++");
+    }
+}

@@ -1,0 +1,48 @@
+program
+    class Base <empty>
+        func f voidtype
+            formals
+            stmtblock
+                print
+                    stringconst "Base:f"
+    class A Base
+        func f voidtype
+            formals
+            stmtblock
+                print
+                    stringconst "A:f"
+    class B Base
+        func f voidtype
+            formals
+            stmtblock
+                print
+                    stringconst "B:f"
+        func g voidtype
+            formals
+            stmtblock
+                print
+                    stringconst "B:g"
+                call f
+                    super
+    class Main <empty>
+        static func main voidtype
+            formals
+            stmtblock
+                vardef base classtype Base
+                vardef a classtype A
+                vardef b classtype B
+                assign
+                    varref base
+                    newobj Base
+                assign
+                    varref a
+                    newobj A
+                assign
+                    varref b
+                    newobj B
+                call f
+                    varref a
+                call f
+                    varref b
+                call g
+                    varref b

@@ -1,0 +1,19 @@
+program
+    class Main <empty>
+        static func alwaysOne inttype
+            formals
+                vardef n inttype
+            stmtblock
+                return
+                    cond
+                        varref n
+                        cases
+                            default
+                                intconst 1
+        static func main voidtype
+            formals
+            stmtblock
+                print
+                    call alwaysOne
+                        <empty>
+                        intconst 100

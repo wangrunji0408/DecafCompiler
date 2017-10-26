@@ -1,0 +1,11 @@
+class Main {
+    static void main() {
+        complex x;
+        complex y;
+        complex z;
+        x = 2 + 3j;
+        y = -24j - 900;
+        z = -1j * 10;
+        PrintComp(x, y, z);
+    }
+}

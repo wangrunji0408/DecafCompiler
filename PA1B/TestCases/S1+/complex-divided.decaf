@@ -1,0 +1,8 @@
+// syntax error: no spaces between 2 and j
+
+class Main {
+    static void main() {
+        complex x;
+        x = 1 + 2 j;
+    }
+}

@@ -1,0 +1,38 @@
+program
+    class Main <empty>
+        static func main voidtype
+            formals
+            stmtblock
+                vardef x comptype
+                assign
+                    varref x
+                    neg
+                        imgconst 1j
+                vardef re inttype
+                vardef im inttype
+                assign
+                    varref re
+                    re
+                        varref x
+                assign
+                    varref im
+                    im
+                        varref x
+                print
+                    varref re
+                    stringconst "+"
+                    varref im
+                    stringconst "j\n"
+                vardef y inttype
+                assign
+                    varref y
+                    intconst 1024
+                vardef z comptype
+                assign
+                    varref z
+                    compcast
+                        varref y
+                printcomp
+                    add
+                        varref z
+                        varref y

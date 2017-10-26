@@ -1,0 +1,10 @@
+class Main {
+    static void main() {
+        int N;
+        N=100;
+        int cnt;
+        cnt=0;
+        do n<N:cnt=cnt+1; od;
+        Print(N);
+    }
+}
