@@ -11,6 +11,12 @@ javafx.util.Pair
 %start Program
 
 %tokens
+COMPLEX PRINTCOMP
+'@' '$' '#'
+CASE DEFAULT
+SUPER
+DCOPY SCOPY
+SPLIT  DO OD
 VOID   BOOL  INT   STRING   CLASS
 NULL   EXTENDS     THIS     WHILE   FOR
 IF     ELSE        RETURN   BREAK   NEW
