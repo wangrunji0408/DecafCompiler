@@ -731,11 +731,11 @@ DefaultExpr     :   DEFAULT ':' Expr ';'
 
 ACaseExprList   :	ACaseExpr ACaseExprList
                     {
-                        $$.elist.add($1.expr);
+                        $$.elist = $2.elist;
+                        $$.elist.add(0, $1.expr);
                     }
                 |	/* empty */
                     {
-                        $$ = new SemValue();
                         $$.elist = new ArrayList<Expr>();
                     }
                 ;
@@ -792,7 +792,8 @@ DoBranch        :   Expr ':' Stmt
 
 DoBranchList    :   SPLIT DoBranch DoBranchList
                     {
-                        $$.slist.add($2.stmt);
+                        $$.slist = $3.slist;
+                        $$.slist.add(0, $2.stmt);
                     }
                 |
                     {
@@ -802,7 +803,7 @@ DoBranchList    :   SPLIT DoBranch DoBranchList
 
 DoStmt          :	DO DoBranch DoBranchList OD
 					{
-                        $3.slist.add($2.stmt);
+                        $3.slist.add(0, $2.stmt);
 						$$.stmt = new Tree.DoStmt($3.slist, $1.loc);
 					}
                 ;
