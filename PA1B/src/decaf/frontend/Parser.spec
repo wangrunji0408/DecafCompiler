@@ -12,7 +12,7 @@ javafx.util.Pair
 
 %tokens
 COMPLEX PRINTCOMP
-'@' '$' '#'
+'@' '$' '#' ':'
 CASE DEFAULT
 SUPER
 DCOPY SCOPY
@@ -66,6 +66,10 @@ Variable        :   Type IDENTIFIER
 SimpleType      :   INT
                     {
                         $$.type = new Tree.TypeIdent(Tree.INT, $1.loc);
+                    }
+                |   COMPLEX
+                    {
+                        $$.type = new Tree.TypeIdent(Tree.COMPLEX, $1.loc);
                     }
                 |   VOID
                     {
@@ -214,6 +218,14 @@ Stmt            :   VariableDef
                             $$.stmt = $1.stmt;
                         }
                     }
+                |   DoStmt ';'
+                    {
+                        $$.stmt = $1.stmt;
+                    }
+                |	PrintCompStmt ';'
+                    {
+                        $$.stmt = $1.stmt;
+                    }
                 |   IfStmt
                     {
                         $$.stmt = $1.stmt;
@@ -349,6 +361,21 @@ Oper7           :   '-'
                 |   '!'
                     {
                         $$.counter = Tree.NOT;
+                        $$.loc = $1.loc;
+                    }
+                |	'@'
+                    {
+                        $$.counter = Tree.RE;
+                        $$.loc = $1.loc;
+                    }
+                |	'$'
+                    {
+                        $$.counter = Tree.IM;
+                        $$.loc = $1.loc;
+                    }
+                |	'#'
+                    {
+                        $$.counter = Tree.COMPCAST;
                         $$.loc = $1.loc;
                     }
                 ;
@@ -612,6 +639,22 @@ Expr9           :   Constant
                     {
                         $$.expr = new Tree.ThisExpr($1.loc);
                     }
+                |   CASE '(' Expr ')' '{' ACaseExprList DefaultExpr '}'
+                    {
+                        $$.expr = new Tree.Case($3.expr, $6.elist, $7.expr, $1.loc);
+                    }
+                |	SUPER
+                	{
+                		$$.expr = new Tree.SuperExpr($1.loc);
+                	}
+                |	DCOPY '(' Expr ')'
+                    {
+                        $$.expr = new Tree.DCopy($3.expr, $1.loc);
+                    }
+                |	SCOPY '(' Expr ')'
+                    {
+                        $$.expr = new Tree.SCopy($3.expr, $1.loc);
+                    }
                 |   NEW AfterNewExpr
                     {
                         if ($2.ident != null) {
@@ -674,6 +717,29 @@ AfterParenExpr  :   Expr ')'
                     }
                 ;
 
+ACaseExpr       :   Constant ':' Expr ';'
+                    {
+                        $$.expr = new Tree.ACase($1.expr, $3.expr, $1.loc);
+                    }
+                ;
+
+DefaultExpr     :   DEFAULT ':' Expr ';'
+                    {
+                        $$.expr = new Tree.Default($3.expr, $1.loc);
+                    }
+                ;
+
+ACaseExprList   :	ACaseExpr ACaseExprList
+                    {
+                        $$.elist.add($1.expr);
+                    }
+                |	/* empty */
+                    {
+                        $$ = new SemValue();
+                        $$.elist = new ArrayList<Expr>();
+                    }
+                ;
+
 // end of expressions
 
 Constant        :   LITERAL
@@ -717,6 +783,36 @@ SubExprList     :   ',' Expr SubExprList
                 ;
 
 // statements
+
+DoBranch        :   Expr ':' Stmt
+                    {
+                        $$.stmt = new Tree.DoBranch($1.expr, $3.stmt, $1.loc);
+                    }
+                ;
+
+DoBranchList    :   SPLIT DoBranch DoBranchList
+                    {
+                        $$.slist.add($2.stmt);
+                    }
+                |
+                    {
+                        $$.slist = new ArrayList<Tree>();
+                    }
+                ;
+
+DoStmt          :	DO DoBranch DoBranchList OD
+					{
+                        $3.slist.add($2.stmt);
+						$$.stmt = new Tree.DoStmt($3.slist, $1.loc);
+					}
+                ;
+
+PrintCompStmt   :	PRINTCOMP '(' ExprList ')'
+                    {
+                        $$.stmt = new PrintComp($3.elist, $1.loc);
+                    }
+                ;
+
 WhileStmt       :   WHILE '(' Expr ')' Stmt
                     {
                         $$.stmt = new Tree.WhileLoop($3.expr, $5.stmt, $1.loc);

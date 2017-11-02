@@ -61,12 +61,13 @@ public abstract class BaseLexer {
     }
 
     protected int imgConst(String ival) {
+        String intStr = ival.substring(0, ival.length()-1);
         try {
             setSemantic(getLocation(), SemValue.createLiteral(
-                    Tree.IMG, Integer.decode(ival.substring(0, ival.length()-1))));
+                    Tree.IMG, Integer.decode(intStr)));
         } catch (NumberFormatException e) {
             Driver.getDriver().issueError(
-                    new IntTooLargeError(getLocation(), ival));
+                    new IntTooLargeError(getLocation(), intStr));
         }
         return Parser.LITERAL;
     }
