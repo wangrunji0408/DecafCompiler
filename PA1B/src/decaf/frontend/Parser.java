@@ -1,6 +1,7 @@
 package decaf.frontend;
 
 import decaf.Driver;
+import decaf.Location;
 import decaf.error.MsgError;
 import decaf.tree.Tree;
 import javafx.util.Pair;
@@ -71,6 +72,14 @@ public class Parser extends Table {
         return token;
     }
 
+    private void print(int symbol, List<Integer> right, int depth) {
+        for(int i=0; i<depth; ++i)
+            System.out.print("  ");
+        System.out.print(name(symbol) + " := ");
+        if(right != null)
+            printSymbolList(right);
+    }
+
     /**
      * Parse function for each non-terminal with error recovery.
      * TODO: add error recovery!
@@ -78,24 +87,58 @@ public class Parser extends Table {
      * @param symbol the non-terminal to be passed.
      * @return the parsed value of `symbol` if parsing succeeded, otherwise `null`.
      */
-    private SemValue parse(int symbol, Set<Integer> follow) {
+    private SemValue parse(int symbol, Set<Integer> follow, int depth) {
         Pair<Integer, List<Integer>> result = query(symbol, lookahead); // get production by lookahead symbol
+
+        Set<Integer> endSet = new HashSet<>();
+        endSet.addAll(follow);
+        endSet.addAll(followSet(symbol));
+
+        Location beginLoc = lexer.getLocation();
+
+        if(result == null)
+        {
+            error();
+            while(true) {
+                result = query(symbol, lookahead);
+                if(result != null)
+                    break;
+                if(endSet.contains(lookahead))
+                {
+//                    print(symbol, null, depth);
+//                    System.out.println(" " + beginLoc + lexer.getLocation() + "  ----- Failed");
+                    return null;
+                }
+                lookahead = lex();
+            }
+        }
+
         int actionId = result.getKey(); // get user-defined action
 
         List<Integer> right = result.getValue(); // right-hand side of production
         int length = right.size();
         SemValue[] params = new SemValue[length + 1];
 
+//        print(symbol, right, depth);
+//        System.out.println(beginLoc);
+
         for (int i = 0; i < length; i++) { // parse right-hand side symbols one by one
             int term = right.get(i);
             params[i + 1] = isNonTerminal(term)
-                    ? parse(term, follow) // for non terminals: recursively parse it
+                    ? parse(term, endSet, depth + 1) // for non terminals: recursively parse it
                     : matchToken(term) // for terminals: match token
                     ;
         }
 
+        Location endLoc = lexer.getLocation();
+
         params[0] = new SemValue(); // initialize return value
-        act(actionId, params); // do user-defined action
+        try {
+            act(actionId, params); // do user-defined action
+        } catch (Exception ignored) {
+
+        }
+
         return params[0];
     }
 
@@ -123,7 +166,7 @@ public class Parser extends Table {
      */
     public Tree.TopLevel parseFile() {
         lookahead = lex();
-        SemValue r = parse(start, new HashSet<>());
+        SemValue r = parse(start, new HashSet<>(), 0);
         return r == null ? null : r.prog;
     }
 
