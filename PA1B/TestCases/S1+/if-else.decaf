@@ -1,0 +1,6 @@
+class Main {
+    static int main() {
+        int a;
+        if(true) if(false) a = 1; else a = 2;
+    }
+}
