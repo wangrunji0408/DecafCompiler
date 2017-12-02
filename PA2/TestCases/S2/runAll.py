@@ -14,7 +14,7 @@ import subprocess
 import sys
 
 def read_txt_file(filename):
-    with open(filename,'a+') as f:
+    with open(filename,'r') as f:
         txt = f.read().strip()
     # Python should be able to do it automatically, but just in case...
     txt = txt.replace('\r','')
@@ -40,8 +40,8 @@ def main():
             info = 'OK :)'
         else:
             info = 'ERROR!'
-            print "actual\n", actual
-            print "expected\n", expected
+            # print "actual\n", actual
+            # print "expected\n", expected
         print('{0:<20}{1}'.format(name,info))
     if os.name == 'nt':
         print('Press Enter to continue...')

@@ -1,9 +1,9 @@
 package decaf.frontend;
 
 import decaf.Driver;
-import decaf.tree.Tree;
 import decaf.error.DecafError;
 import decaf.error.MsgError;
+import decaf.tree.Tree;
 
 public abstract class BaseParser {
 	private Lexer lexer;

@@ -36,8 +36,9 @@ HEX_DIGIT 			= ([0-9A-Fa-f])
 HEX_INTEGER			= (0[Xx]{HEX_DIGIT}+)
 DEC_INTEGER			= ({DIGIT}+)
 INTEGER				= ({HEX_INTEGER}|{DEC_INTEGER})
+IMG                 = ({INTEGER}"j")
 IDENTIFIER			= ([A-Za-z][_0-9A-Za-z]*)
-SIMPLE_OPERATOR		= ("+"|"-"|"*"|"/"|"%"|"="|"<"|">"|"."|","|";"|"!"|"("|")"|"["|"]"|"{"|"}")
+SIMPLE_OPERATOR		= ("+"|"-"|"*"|"/"|"%"|"="|"<"|">"|"."|","|";"|"!"|"("|")"|"["|"]"|"{"|"}"|":"|"@"|"$"|"#")
 S_COMMENT			= ("//"[^\r\n]*{NEWLINE})
 WHITESPACE			= ([ \t]+)
 
@@ -53,6 +54,7 @@ WHITESPACE			= ([ \t]+)
 
 	// 识别关键字的规则 
 "void"				{ return keyword(Parser.VOID);			}
+"complex"           { return keyword(Parser.COMPLEX);       }
 "int"				{ return keyword(Parser.INT);			}
 "bool"				{ return keyword(Parser.BOOL);			}
 "string"			{ return keyword(Parser.STRING);		}
@@ -61,6 +63,11 @@ WHITESPACE			= ([ \t]+)
 "class"				{ return keyword(Parser.CLASS);			}
 "extends"			{ return keyword(Parser.EXTENDS);		}
 "this"				{ return keyword(Parser.THIS);			}
+"super"				{ return keyword(Parser.SUPER);			}
+"dcopy"				{ return keyword(Parser.DCOPY);			}
+"scopy"				{ return keyword(Parser.SCOPY);			}
+"do"				{ return keyword(Parser.DO);			}
+"od"				{ return keyword(Parser.OD);			}
 "while"				{ return keyword(Parser.WHILE);			}
 "for"				{ return keyword(Parser.FOR);			}
 "if"				{ return keyword(Parser.IF);			}
@@ -68,10 +75,13 @@ WHITESPACE			= ([ \t]+)
 "return"			{ return keyword(Parser.RETURN);		}
 "break"				{ return keyword(Parser.BREAK);			}
 "Print"				{ return keyword(Parser.PRINT);			}
+"PrintComp"			{ return keyword(Parser.PRINTCOMP);		}
 "ReadInteger"		{ return keyword(Parser.READ_INTEGER);	}
 "ReadLine"			{ return keyword(Parser.READ_LINE);		}
 "static"			{ return keyword(Parser.STATIC);		}
 "instanceof"		{ return keyword(Parser.INSTANCEOF);	}
+"case"              { return keyword(Parser.CASE);          }
+"default"           { return keyword(Parser.DEFAULT);       }
 
 	// 识别操作符的规则
 "<="				{ return operator(Parser.LESS_EQUAL);	}
@@ -80,13 +90,15 @@ WHITESPACE			= ([ \t]+)
 "!="				{ return operator(Parser.NOT_EQUAL);	}
 "&&"				{ return operator(Parser.AND);			}
 "||"				{ return operator(Parser.OR);			}
+"|||"               { return operator(Parser.SPLIT);        }
 {SIMPLE_OPERATOR}	{ return operator((int)yycharat(0));	}
 
 	// 识别常数的规则
-"true"				{ return boolConst(true);										}
-"false"				{ return boolConst(false);										}
+"true"				{ return boolConst(true);				}
+"false"				{ return boolConst(false);				}
 {INTEGER}			{ return intConst(yytext());			}
-<YYINITIAL>\"		{ sloc = getLocation();		  
+{IMG}               { return imgConst(yytext());            }
+<YYINITIAL>\"		{ sloc = getLocation();
 					  yybegin(S);
 					  buffer = new StringBuilder();								    }
 <S>{NEWLINE}		{ issueError(new NewlineInStrError(sloc, MiscUtils.quote(buffer.toString())));}
