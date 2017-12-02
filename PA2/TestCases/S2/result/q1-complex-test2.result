@@ -1,0 +1,7 @@
+*** Error at (12,11): incompatible operands: string + complex
+*** Error at (15,11): incompatible operands: string + complex
+*** Error at (17,12): incompatible operands: int + string
+*** Error at (19,7): incompatible operands: complex = int
+*** Error at (20,7): incompatible operands: complex = int
+*** Error at (21,17): incompatible operands: complex + string
+*** Error at (21,25): incompatible argument 3: int given, complex expected

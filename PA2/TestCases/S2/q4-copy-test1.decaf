@@ -1,0 +1,50 @@
+class Main {
+    static void main() {
+			int i;
+			class people a;
+			class people b;
+			class people c;
+			class student d;
+			class animal x;
+
+			a = new people();
+			d = new student();
+			i = i + dcopy(a).getage();
+			b = dcopy(a);
+			b = scopy(a);
+    }
+}
+
+class people {
+	int age;
+	string name;
+
+	int getage(){
+		return age;
+	}
+}
+
+class student extends people {
+	int stuid;
+	
+	int BeMan(int age, string name){
+		int a;
+		int b;
+		b = super.getage();
+		return a;
+	}
+
+	int getid(){
+		return stuid;
+	}
+}
+
+class animal {
+	int age;
+	string type;
+	
+	string gettype(){
+		return type;
+	}
+}
+

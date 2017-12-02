@@ -1,0 +1,8 @@
+*** Error at (7,7): can not use super in static function
+*** Error at (12,13): super.member_var is not supported
+*** Error at (17,13): no parent class exist for class : people
+*** Error at (32,5): incompatible operands: int = class : student
+*** Error at (33,13): super.member_var is not supported
+*** Error at (34,13): field 'getid' not found in 'class : people'
+*** Error at (35,13): super.member_var is not supported
+*** Error at (36,13): 'age' is not a method in class 'class : people'

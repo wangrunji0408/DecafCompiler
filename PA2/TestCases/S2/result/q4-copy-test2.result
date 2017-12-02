@@ -1,0 +1,6 @@
+*** Error at (12,8): expected class type for copy expr but int given
+*** Error at (13,6): For copy expr, the source class : student and the destination class : people are not same
+*** Error at (14,6): For copy expr, the source class : people and the destination class : student are not same
+*** Error at (15,6): For copy expr, the source class : animal and the destination class : people are not same
+*** Error at (16,6): For copy expr, the source class : animal and the destination int are not same
+*** Error at (36,5): For copy expr, the source class : student and the destination class : people are not same

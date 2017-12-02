@@ -1,0 +1,51 @@
+class people {
+	int age;
+	string name;
+
+	static void test(){
+		int x;
+		x = super.a;
+	}
+
+	void test1(){
+		int x;
+		x = super.x;
+	}
+
+	void test2(){
+		int x;
+		x = super.x();
+	}
+
+	int getage(){
+		return age;
+	}
+}
+
+class student extends people {
+	int stuid;
+
+	
+	int BeMan(int age, string name){
+		int a;
+		int b;
+		b = super;
+		a = super.age;
+		a = super.getid();
+		a = super.age1;
+		a = super.age();
+		b = super.getage();
+		return a;
+	}
+
+	int getid(){
+		return stuid;
+	}
+}
+
+class Main {
+    static void main() {
+			class student ab;
+			ab.BeMan(23,"sdfaf");
+    }
+}
