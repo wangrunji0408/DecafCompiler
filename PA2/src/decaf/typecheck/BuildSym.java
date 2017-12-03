@@ -45,6 +45,7 @@ public class BuildSym extends Tree.Visitor {
 	public void visitTopLevel(Tree.TopLevel program) {
 		program.globalScope = new GlobalScope();
 		table.open(program.globalScope);
+		// 创建符号表，检查重复
 		for (Tree.ClassDef cd : program.classes) {
 			Class c = new Class(cd.name, cd.parent, cd.getLocation());
 			Class earlier = table.lookupClass(cd.name);
@@ -56,7 +57,7 @@ public class BuildSym extends Tree.Visitor {
 			}
 			cd.symbol = c;
 		}
-
+		// 检查父类，检查继承次序
 		for (Tree.ClassDef cd : program.classes) {
 			Class c = cd.symbol;
 			if (cd.parent != null && c.getParent() == null) {
@@ -68,11 +69,11 @@ public class BuildSym extends Tree.Visitor {
 				c.dettachParent();
 			}
 		}
-
+		// 创建类型
 		for (Tree.ClassDef cd : program.classes) {
 			cd.symbol.createType();
 		}
-
+		// 【递归处理类】 查找主类型
 		for (Tree.ClassDef cd : program.classes) {
 			cd.accept(this);
 			if (Driver.getDriver().getOption().getMainClassName().equals(
@@ -80,11 +81,11 @@ public class BuildSym extends Tree.Visitor {
 				program.main = cd.symbol;
 			}
 		}
-
+		// 检查重载
 		for (Tree.ClassDef cd : program.classes) {
 			checkOverride(cd.symbol);
 		}
-
+		// 检查主类/主函数
 		if (!isMainClass(program.main)) {
 			issueError(new NoMainClassError(Driver.getDriver().getOption()
 					.getMainClassName()));
@@ -173,8 +174,15 @@ public class BuildSym extends Tree.Visitor {
 		case Tree.BOOL:
 			type.type = BaseType.BOOL;
 			break;
-		default:
+		case Tree.COMPLEX:
+			type.type = BaseType.COMPLEX;
+			break;
+		case Tree.STRING:
 			type.type = BaseType.STRING;
+			break;
+		default:
+			break;
+
 		}
 	}
 
