@@ -1,10 +1,10 @@
 package decaf.typecheck;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
-import com.sun.xml.internal.rngom.parse.host.Base;
 import decaf.Driver;
 import decaf.Location;
 import decaf.error.*;
@@ -490,6 +490,52 @@ public class TypeCheck extends Tree.Visitor {
 		if (ifStmt.falseBranch != null) {
 			ifStmt.falseBranch.accept(this);
 		}
+	}
+
+	@Override
+	public void visitCase(Tree.Case caseExpr) {
+		caseExpr.value.accept(this);
+		if(caseExpr.value.type != BaseType.INT)
+			issueError(new IncompatibleCaseKeyTypeError(caseExpr.value.getLocation(), caseExpr.value.type.toString()));
+
+		caseExpr.type = null;
+		if(caseExpr._default != null) {
+			caseExpr._default.accept(this);
+			caseExpr.type = caseExpr._default.value.type;
+		}
+
+		HashSet<Integer> keys = new HashSet<>();
+		for(Tree.ACase acase: caseExpr.caseList) {
+			acase.accept(this);
+			if(!acase.key.type.equal(BaseType.INT)) {
+				issueError(new IncompatibleCaseKeyTypeError(acase.getLocation(), acase.key.type.toString()));
+			} else {
+				int key = (int)((Tree.Literal)acase.key).value;
+				if(keys.contains(key))
+					issueError(new CaseConditionNotUniqueError(acase.key.getLocation()));
+				else
+					keys.add(key);
+			}
+
+			if(caseExpr.type == null)
+				caseExpr.type = acase.value.type;
+			if(caseExpr.type != BaseType.ERROR && caseExpr.type != acase.value.type) {
+				issueError(new InconsistentCaseValueTypeError(acase.getLocation(),
+						caseExpr.type.toString(), acase.value.type.toString()));
+				caseExpr.type = BaseType.ERROR;
+			}
+		}
+	}
+
+	@Override
+	public void visitACase(Tree.ACase acase) {
+		acase.key.accept(this);
+		acase.value.accept(this);
+	}
+
+	@Override
+	public void visitDefault(Tree.Default _default) {
+		_default.value.accept(this);
 	}
 
 	@Override
