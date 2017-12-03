@@ -546,6 +546,24 @@ public class TypeCheck extends Tree.Visitor {
 	}
 
 	@Override
+	public void visitDoStmt(Tree.DoStmt doStmt) {
+		breaks.add(doStmt);
+		for(Tree.DoBranch doBranch: doStmt.branchList) {
+			doBranch.accept(this);
+		}
+		breaks.pop();
+	}
+
+	@Override
+	public void visitDoBranch(Tree.DoBranch doBranch) {
+		doBranch.cond.accept(this);
+		if(!doBranch.cond.type.equal(BaseType.BOOL)) {
+			issueError(new DoCondTypeError(doBranch.getLocation(), doBranch.cond.type.toString()));
+		}
+		doBranch.stmt.accept(this);
+	}
+
+	@Override
 	public void visitCase(Tree.Case caseExpr) {
 		caseExpr.value.accept(this);
 		if(caseExpr.value.type != BaseType.INT)

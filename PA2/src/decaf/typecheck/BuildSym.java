@@ -241,6 +241,13 @@ public class BuildSym extends Tree.Visitor {
 	}
 
 	@Override
+	public void visitDoStmt(Tree.DoStmt doStmt) {
+		for(Tree.DoBranch doBranch: doStmt.branchList) {
+			doBranch.stmt.accept(this);
+		}
+	}
+
+	@Override
 	public void visitWhileLoop(Tree.WhileLoop whileLoop) {
 		if (whileLoop.loopBody != null) {
 			whileLoop.loopBody.accept(this);
