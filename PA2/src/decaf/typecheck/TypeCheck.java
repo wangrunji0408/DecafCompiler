@@ -322,6 +322,28 @@ public class TypeCheck extends Tree.Visitor {
 	}
 
 	@Override
+	public void visitDCopy(Tree.DCopy dcopy) {
+		dcopy.expr.accept(this);
+		if(!dcopy.expr.type.isClassType()) {
+			issueError(new CopyExprIsNotClassTypeError(dcopy.getLocation(), dcopy.expr.type.toString()));
+			dcopy.type = BaseType.ERROR;
+			return;
+		}
+		dcopy.type = dcopy.expr.type;
+	}
+
+	@Override
+	public void visitSCopy(Tree.SCopy scopy) {
+		scopy.expr.accept(this);
+		if(!scopy.expr.type.isClassType()) {
+			issueError(new CopyExprIsNotClassTypeError(scopy.getLocation(), scopy.expr.type.toString()));
+			scopy.type = BaseType.ERROR;
+			return;
+		}
+		scopy.type = scopy.expr.type;
+	}
+
+	@Override
 	public void visitTypeTest(Tree.TypeTest instanceofExpr) {
 		instanceofExpr.instance.accept(this);
 		if (!instanceofExpr.instance.type.isClassType()) {
@@ -475,9 +497,14 @@ public class TypeCheck extends Tree.Visitor {
 	public void visitAssign(Tree.Assign assign) {
 		assign.left.accept(this);
 		assign.expr.accept(this);
-		if (!assign.left.type.equal(BaseType.ERROR)
-				&& (assign.left.type.isFuncType() || !assign.expr.type
-						.compatible(assign.left.type))) {
+		if(assign.left.type.equal(BaseType.ERROR) || assign.expr.type.equal(BaseType.ERROR))
+			return;
+		if(!assign.expr.type.equal(assign.left.type) &&
+				(assign.expr instanceof Tree.DCopy || assign.expr instanceof Tree.SCopy)) {
+			issueError(new CopyAssignTypeError(assign.getLocation(), assign.expr.type.toString(), assign.left.type.toString()));
+			return;
+		}
+		if(assign.left.type.isFuncType() || !assign.expr.type.compatible(assign.left.type)) {
 			issueError(new IncompatBinOpError(assign.getLocation(),
 					assign.left.type.toString(), "=", assign.expr.type
 							.toString()));

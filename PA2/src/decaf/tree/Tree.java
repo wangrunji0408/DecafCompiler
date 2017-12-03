@@ -1304,7 +1304,7 @@ public abstract class Tree {
 
     public static class DCopy extends Expr {
 
-        Expr expr;
+        public Expr expr;
 
         public DCopy(Expr expr, Location loc) {
             super(DCOPYEXPR, loc);
@@ -1327,7 +1327,7 @@ public abstract class Tree {
 
     public static class SCopy extends Expr {
 
-        Expr expr;
+        public Expr expr;
 
         public SCopy(Expr expr, Location loc) {
             super(SCOPYEXPR, loc);
