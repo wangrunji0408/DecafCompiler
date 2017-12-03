@@ -149,6 +149,8 @@ public class TypeCheck extends Tree.Visitor {
 		Type receiverType = callExpr.receiver == null ? ((ClassScope) table
 				.lookForScope(Scope.Kind.CLASS)).getOwner().getType()
 				: callExpr.receiver.type;
+		if(callExpr.receiver instanceof Tree.SuperExpr)
+			receiverType = ((ClassType)callExpr.receiver.type).getParentType();
 		if (f == null) {
 			issueError(new FieldNotFoundError(callExpr.getLocation(),
 					callExpr.method, receiverType.toString()));
@@ -244,8 +246,18 @@ public class TypeCheck extends Tree.Visitor {
 			return;
 		}
 
-		ClassScope cs = ((ClassType) callExpr.receiver.type)
-				.getClassScope();
+		ClassType classType = (ClassType) callExpr.receiver.type;
+		ClassScope cs;
+		if(callExpr.receiver instanceof Tree.SuperExpr) {
+			if(classType.getParentType() == null) {
+				issueError(new SuperNotExistError(callExpr.getLocation(), classType.getSymbol().getName()));
+				callExpr.type = BaseType.ERROR;
+				return;
+			}
+			cs = classType.getParentType().getClassScope();
+		} else {
+			cs = classType.getClassScope();
+		}
 		checkCallExpr(callExpr, cs.lookupVisible(callExpr.method));
 	}
 
@@ -294,6 +306,17 @@ public class TypeCheck extends Tree.Visitor {
 			thisExpr.type = BaseType.ERROR;
 		} else {
 			thisExpr.type = ((ClassScope) table.lookForScope(Scope.Kind.CLASS))
+					.getOwner().getType();
+		}
+	}
+
+	@Override
+	public void visitSuperExpr(Tree.SuperExpr superExpr) {
+		if (currentFunction.isStatik()) {
+			issueError(new SuperInStaticFuncError(superExpr.getLocation()));
+			superExpr.type = BaseType.ERROR;
+		} else {
+			superExpr.type = ((ClassScope) table.lookForScope(Scope.Kind.CLASS))
 					.getOwner().getType();
 		}
 	}
@@ -374,7 +397,12 @@ public class TypeCheck extends Tree.Visitor {
 		} else {
 			ident.owner.usedForRef = true;
 			ident.owner.accept(this);
-			if (!ident.owner.type.equal(BaseType.ERROR)) {
+			if (ident.owner.type.equal(BaseType.ERROR)) {
+				ident.type = BaseType.ERROR;
+			} else if (ident.owner instanceof Tree.SuperExpr) {
+				issueError(new SuperMemberVarNotSupportedError(ident.getLocation()));
+				ident.type = BaseType.ERROR;
+			} else {
 				if (ident.owner.isClass || !ident.owner.type.isClassType()) {
 					issueError(new NotClassFieldError(ident.getLocation(),
 							ident.name, ident.owner.type.toString()));
@@ -404,8 +432,6 @@ public class TypeCheck extends Tree.Visitor {
 						ident.type = v.getType();
 					}
 				}
-			} else {
-				ident.type = BaseType.ERROR;
 			}
 		}
 	}
