@@ -41,7 +41,7 @@ public class TypeCheck extends Tree.Visitor {
 
 	@Override
 	public void visitBinary(Tree.Binary expr) {
-		expr.type = checkBinaryOp(expr.left, expr.right, expr.tag, expr.loc);
+		expr.type = checkBinaryOp(expr);
 	}
 
 	@Override
@@ -716,7 +716,12 @@ public class TypeCheck extends Tree.Visitor {
 		Driver.getDriver().issueError(error);
 	}
 
-	private Type checkBinaryOp(Tree.Expr left, Tree.Expr right, int op, Location location) {
+	private Type checkBinaryOp(Tree.Binary expr) {
+		Tree.Expr left = expr.left;
+		Tree.Expr right = expr.right;
+		int op = expr.tag;
+		Location location = expr.loc;
+
 		left.accept(this);
 		right.accept(this);
 
@@ -745,11 +750,17 @@ public class TypeCheck extends Tree.Visitor {
 				compatible = true;
 			}
 			// Cast to COMPLEX
-			else if((left.type.compatible(BaseType.INT) || left.type.compatible(BaseType.COMPLEX))
-				&& (right.type.compatible(BaseType.INT) || right.type.compatible(BaseType.COMPLEX))) {
+			else if((left.type.equal(BaseType.INT) || left.type.equal(BaseType.COMPLEX))
+				&& (right.type.equal(BaseType.INT) || right.type.equal(BaseType.COMPLEX))) {
 				compatible = true;
-				left.type = BaseType.COMPLEX;
-				right.type = BaseType.COMPLEX;
+				if(left.type.equal(BaseType.INT)) {
+					expr.left = left = new Tree.Unary(Tree.COMPCAST, left, left.getLocation());
+					left.accept(this);
+				}
+				if(right.type.equal(BaseType.INT)) {
+					expr.right = right = new Tree.Unary(Tree.COMPCAST, right, right.getLocation());
+					right.accept(this);
+				}
 				returnType = BaseType.COMPLEX;
 			}
 			break;
