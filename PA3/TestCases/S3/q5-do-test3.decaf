@@ -1,0 +1,10 @@
+class Main {
+    static void main(){
+	int a;
+        a = 210;
+        do a>=100: {a=a-100;Print(a);}|||
+           a<50:  {a=a+50;Print(a);}|||
+           a<0:   {a=a+200;Print(a);}
+        od;
+    }
+}

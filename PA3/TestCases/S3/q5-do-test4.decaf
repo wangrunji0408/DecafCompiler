@@ -1,0 +1,13 @@
+class Main {
+    static void main(){
+    	int a;
+	a= 10;
+	int b;
+        b=10;
+        do a+b>30: Print("a+b>30");|||
+           a<20:{Print("a<20"); a = a + 10;}|||
+           true:{Print("true"); break;}|||
+           b>10:{b=a+b;Print(b);}
+        od;
+    }
+}

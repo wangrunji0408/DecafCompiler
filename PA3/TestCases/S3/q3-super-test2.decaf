@@ -1,0 +1,165 @@
+class A {
+	int a;
+	int a1;
+	void setA(int i, int j){
+		a = i;
+		a1 = j;
+	}
+	void print(){
+		Print(" a=",a," a1=",a1," ");	
+	}
+	void fun(){
+		Print("A");
+		print();
+		Print("\n");
+	}
+}
+
+class B extends A{
+	int b;
+	int b1;
+	void setB(int i, int j){
+		b = i;
+		b1 = j;
+	}
+	void print(){
+		Print(" b=",b," b1=",b1," ");	
+	}
+	void fun(){
+		Print("B");
+		super.print();
+		print();
+		Print("\n");
+	}
+}
+class C extends A{
+	int c;
+	int c1;
+	void setC(int i, int j){
+		c = i;
+		c1 = j;
+	}
+	void print(){
+		Print(" c=",c," c1=",c1," ");	
+	}
+	void fun(){
+		Print("C");
+		super.print();
+		print();
+		Print("\n");
+	}
+}
+class D extends B{
+	int d;
+	int d1;
+	void setD(int i, int j){
+		d = i;
+		d1 = j;
+	}
+	void print(){
+		Print(" d=",d," d1=",d1," ");	
+	}
+	void fun(){
+		Print("D");
+		super.print();
+		print();
+		Print("\n");
+	}
+}
+class E extends C{
+	int e;
+	int e1;
+	void setE(int i, int j){
+		e = i;
+		e1 = j;
+	}
+	void print(){
+		Print(" e=",e," e1=",e1," ");	
+	}
+	void fun(){
+		Print("E");
+		super.print();
+		print();
+		Print("\n");
+	}
+}
+class F extends E{
+	int f;
+	int f1;
+	void setF(int i, int j){
+		f = i;
+		f1 = j;
+	}
+	void print(){
+		Print(" f=",f," f1=",f1," ");	
+	}
+	void fun(){
+		Print("F");
+		super.print();
+		print();
+		Print("\n");
+	}
+}
+
+class G extends C {
+	int g;
+	void setG(int i){
+		g = i;
+	}
+	void print(){
+		Print(" g=",g);	
+	}
+	void fun(){
+		Print("G");
+		super.print();
+		Print("\n");
+	}
+}
+
+
+class Main {
+
+    static void main() {
+    		class A a;
+    		class B b;
+    		class C c;
+    		class D d;
+    		class E e;
+    		class F f;
+    		class G g;
+    		
+    		a = new A();
+    		b = new B();
+    		c = new C();
+    		d = new D();
+    		e = new E();
+    		f = new F();
+    		g = new G();
+    		a.setA(10,11);
+    		b.setA(20,21);
+    		b.setB(22,23);
+			c.setA(30,31);
+			c.setC(32,33);
+			d.setA(40,41);
+    		d.setB(42,43);
+			d.setD(44,45);
+			e.setA(50,51);
+			e.setC(52,53);
+			e.setE(54,55);
+			f.setA(60,61);
+			f.setC(62,63);
+			f.setE(64,65);
+			f.setF(66,67);
+     		g.setA(70,71);
+     		g.setC(72,73);
+     		g.setG(74);
+    		
+    		a.fun();
+    		b.fun();
+    		c.fun();
+    		d.fun();
+    		e.fun();
+    		f.fun();
+    		g.fun();
+    }
+}

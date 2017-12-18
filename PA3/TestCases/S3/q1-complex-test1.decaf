@@ -1,0 +1,49 @@
+class Main {
+    static void main() {
+			complex ab;
+			complex cd;
+			complex ba;
+			int s;
+			int a;
+			int b;
+			int c;
+			int d;
+			s = 1;
+			Print(s,"\n");
+			ab = 3+12j;
+			PrintComp(ab);
+			Print("\n");
+			ba = 3 + 45j;
+			a = @ab;
+			b = $ab;
+			Print(a,b,"\n");
+			cd = #(a + b);
+			PrintComp(cd);
+			Print("\n");
+			PrintComp(ab + cd);
+			Print("\n");
+			PrintComp(ab + cd, ba);
+			Print("\n");
+			
+			//for plus and mul
+			ba = ab + cd;
+			ba = ab + a;
+			ba = ab + 0j;
+			ba = 0j + a;
+			d = 4 + a;
+			Print(d);
+			Print("\n");
+			PrintComp(ba);
+			Print("\n");
+
+			ba = ab * cd;
+			ba = ab * a;
+			ba = ab * 0j;
+			ba = 0j * a;
+			d = 4 * a;
+			Print(d);
+			Print("\n");
+			PrintComp(ba);
+			Print("\n");
+    }
+}

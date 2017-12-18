@@ -1,0 +1,60 @@
+class Main {
+    static void main(){
+    	int n;
+      int a;
+      int b;
+			int flag;
+			complex ca;
+      n=6;
+      a=2;
+      b=3;
+      a = case(n*3){
+  	     0:a+b;
+         3:a+3;
+         9:b*2+6;
+         default:100;};
+
+			Print(a); 
+      Print("\n");
+      flag = 3;
+			a = case(flag){
+  	     0:a+b;
+         3:a+3;
+         6:b*2+6;
+         default:100;};
+      Print(a);
+      Print("\n");
+//return
+			a = case(n){
+  	     0:a+b;
+         3:a+3;
+         6:b*2+6;
+         default:100;};
+      Print(a);
+      Print("\n");
+
+      a = case(n-6){
+  	     0:a+b;
+         3:a+3;
+         9:b*2+6;
+         default:100;};
+      Print(a);
+      Print("\n");
+
+			ca = #case(n){
+  	     0:a+b;
+         3:a+3;
+         6:b*2+6;
+         default:100;};
+      PrintComp(ca);
+      Print("\n");
+			
+			ca = #(case(n){
+				8: a+b;
+				3: a+n;
+				0:  8;
+        default:100;});
+      PrintComp(ca);
+      Print("\n");
+	}
+}

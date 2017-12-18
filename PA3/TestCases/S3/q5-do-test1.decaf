@@ -1,0 +1,17 @@
+class Main {
+    static void main() {
+    		int a;
+    		int b;
+    		int c;
+    		a = 0;
+    		b = 1;
+    		c = 2;
+				
+				do
+					a == b: {a = 5; int d; d = a; }|||
+					c + a == b: b = c + 5;|||
+					a == 0: b = a;
+				od;
+            Print(a,b,c);
+    }
+}

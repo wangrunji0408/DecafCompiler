@@ -1,0 +1,54 @@
+class Main {
+    static void main() {
+			class people a;
+			class people b;
+			a = new people();
+			a.setage();
+			b = dcopy(a);
+			b.setaniage(99);
+			Print("a: \n");
+			a.getage();
+			Print("b: \n");
+			b.getage();
+    }
+}
+
+class animal {
+	int age;
+	void setage(int a)
+	{
+		age = a;
+	}
+	void getage(){
+		Print(age);
+		Print("\n");
+	}
+}
+
+class people {
+	int age;
+	complex ex;
+	class animal ani;
+	string name;
+	void setaniage(int a)
+	{
+		ani.setage(a);
+	}
+	void getage(){
+		Print(age,"\n");
+		PrintComp(ex);
+		Print("\n");
+		ani.getage();
+		Print(name);
+		Print("\n");
+	}
+
+	void setage(){
+		ani = new animal();
+		setaniage(100);
+		age = 10;
+		name = "11";
+		ex = 89 + 8j;
+	}
+}
+

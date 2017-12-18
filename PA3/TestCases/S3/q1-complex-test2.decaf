@@ -1,0 +1,21 @@
+class Mac  {
+    complex ex;
+    int mouse;
+    void Crash(int numTimes,complex comp, int k) {
+    	mouse = numTimes;
+    	ex = comp;
+        Print(mouse);
+        Print("\n");
+        Print(k);
+        Print("\n");
+        PrintComp(ex);
+    }
+}
+
+class Main {
+    static void main() {
+        class Mac powerbook;
+        powerbook = new Mac();
+        powerbook.Crash(2,3+4j,5);
+    }
+}
