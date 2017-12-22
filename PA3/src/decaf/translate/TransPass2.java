@@ -150,7 +150,7 @@ public class TransPass2 extends Tree.Visitor {
 	public void visitLiteral(Tree.Literal literal) {
 		switch (literal.typeTag) {
 		case Tree.INT:
-			literal.val = tr.genLoadImm4(((Integer)literal.value).intValue());
+			literal.val = tr.genLoadImm4((Integer) literal.value);
 			break;
 		case Tree.BOOL:
 			literal.val = tr.genLoadImm4((Boolean)(literal.value) ? 1 : 0);
@@ -385,5 +385,27 @@ public class TransPass2 extends Tree.Visitor {
 			tr.genClassCast(typeCast.expr.val, typeCast.symbol);
 		}
 		typeCast.val = typeCast.expr.val;
+	}
+
+	@Override
+	public void visitCase(Tree.Case case_) {
+		Label allEndLabel = Label.createLabel();
+		case_.value.accept(this);
+		case_.val = Temp.createTempI4();
+		for(Tree.ACase acase: case_.caseList) {
+			Label endLabel = Label.createLabel();
+			acase.key.accept(this);
+			Temp cmp = tr.genEqu(case_.value.val, acase.key.val);
+			tr.genBeqz(cmp, endLabel);
+			acase.value.accept(this);
+			tr.genAssign(case_.val, acase.value.val);
+			tr.genBranch(allEndLabel);
+			tr.genMark(endLabel);
+		}
+		{
+			case_._default.value.accept(this);
+			tr.genAssign(case_.val, case_._default.value.val);
+		}
+		tr.genMark(allEndLabel);
 	}
 }
