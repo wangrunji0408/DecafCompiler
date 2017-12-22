@@ -9,6 +9,7 @@ import decaf.symbol.Variable;
 import decaf.tac.Label;
 import decaf.tac.Temp;
 import decaf.type.BaseType;
+import decaf.utils.Complex;
 
 public class TransPass2 extends Tree.Visitor {
 
@@ -155,8 +156,12 @@ public class TransPass2 extends Tree.Visitor {
 		case Tree.BOOL:
 			literal.val = tr.genLoadImm4((Boolean)(literal.value) ? 1 : 0);
 			break;
-		default:
+		case Tree.IMG:
+			literal.val = tr.genLoadComplex((Complex)literal.value);
+			break;
+		case Tree.STRING:
 			literal.val = tr.genLoadStrConst((String)literal.value);
+			break;
 		}
 	}
 
@@ -172,8 +177,17 @@ public class TransPass2 extends Tree.Visitor {
 		case Tree.NEG:
 			expr.val = tr.genNeg(expr.expr.val);
 			break;
-		default:
+		case Tree.NOT:
 			expr.val = tr.genLNot(expr.expr.val);
+			break;
+		case Tree.RE:
+			break;
+		case Tree.IM:
+			break;
+		case Tree.COMPCAST:
+			expr.val = tr.genLoadComplex(new Complex());
+			tr.genStore(expr.expr.val, expr.val, 0);
+			break;
 		}
 	}
 

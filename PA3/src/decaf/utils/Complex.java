@@ -13,6 +13,9 @@ public class Complex {
 		this.image = 0;
 	}
 
+	public Complex() {
+	}
+
 	public int getReal() {
 		return real;
 	}

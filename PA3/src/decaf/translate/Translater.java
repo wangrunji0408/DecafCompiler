@@ -21,6 +21,7 @@ import decaf.tac.Temp;
 import decaf.tac.VTable;
 import decaf.type.BaseType;
 import decaf.type.Type;
+import decaf.utils.Complex;
 
 public class Translater {
 	private List<VTable> vtables;
@@ -389,6 +390,17 @@ public class Translater {
 		genStore(zero, obj, 0);
 		genBranch(loop);
 		genMark(exit);
+		return obj;
+	}
+
+	public Temp genLoadComplex(Complex value) {
+		Temp size = genLoadImm4(OffsetCounter.DOUBLE_SIZE);
+		genParm(size);
+		Temp obj = genIntrinsicCall(Intrinsic.ALLOCATE);
+		Temp real = genLoadImm4(value.getReal());
+		Temp image = genLoadImm4(value.getImage());
+		genStore(real, obj, 0);
+		genStore(image, obj, 4);
 		return obj;
 	}
 
