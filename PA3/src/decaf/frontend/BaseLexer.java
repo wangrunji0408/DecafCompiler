@@ -1,12 +1,12 @@
 package decaf.frontend;
 
-import java.io.IOException;
-
 import decaf.Driver;
 import decaf.Location;
 import decaf.error.DecafError;
 import decaf.error.IntTooLargeError;
 import decaf.tree.Tree;
+
+import java.io.IOException;
 
 public abstract class BaseLexer {
 
@@ -53,6 +53,17 @@ public abstract class BaseLexer {
 		try {
 			setSemantic(getLocation(), SemValue.createLiteral(
 					Tree.INT, Integer.decode(ival)));
+		} catch (NumberFormatException e) {
+			Driver.getDriver().issueError(
+					new IntTooLargeError(getLocation(), ival));
+		}
+		return Parser.LITERAL;
+	}
+
+	protected int imgConst(String ival) {
+		try {
+			setSemantic(getLocation(), SemValue.createLiteral(
+					Tree.IMG, Integer.decode(ival.substring(0, ival.length()-1))));
 		} catch (NumberFormatException e) {
 			Driver.getDriver().issueError(
 					new IntTooLargeError(getLocation(), ival));

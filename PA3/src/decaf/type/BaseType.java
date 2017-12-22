@@ -20,6 +20,8 @@ public class BaseType extends Type {
 	
 	public static final BaseType VOID = new BaseType("void");
 
+	public static final BaseType COMPLEX = new BaseType("complex");
+
 	@Override
 	public boolean isBaseType() {
 		return true;
