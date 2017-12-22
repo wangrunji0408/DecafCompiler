@@ -77,7 +77,7 @@ public class TransPass2 extends Tree.Visitor {
 					i = tr.genAdd(i1, i2);
 					expr.val = tr.genNewComplex(r, i);
 					break;
-				case Tree.MINUS:
+				case Tree.MUL:
 					r = tr.genSub(tr.genMul(r1, r2), tr.genMul(i1, i2));
 					i = tr.genAdd(tr.genMul(r1, i2), tr.genMul(i1, r2));
 					expr.val = tr.genNewComplex(r, i);
@@ -163,8 +163,16 @@ public class TransPass2 extends Tree.Visitor {
 			break;
 		case PARAM_VAR:
 		case LOCAL_VAR:
-			tr.genAssign(((Tree.Ident) assign.left).symbol.getTemp(),
-					assign.expr.val);
+			Temp leftVal = ((Tree.Ident) assign.left).symbol.getTemp();
+			Temp val = assign.expr.val;
+			if(assign.expr.type.equal(BaseType.COMPLEX)) {
+				Temp real = tr.genLoad(val, 0);
+				Temp image = tr.genLoad(val, 4);
+				Temp newComplex = tr.genNewComplex(real, image);
+				tr.genAssign(leftVal, newComplex);
+			} else {
+				tr.genAssign(leftVal, val);
+			}
 			break;
 		}
 	}

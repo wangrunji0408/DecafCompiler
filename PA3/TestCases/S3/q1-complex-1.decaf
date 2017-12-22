@@ -1,7 +1,10 @@
 class Main {
     static void main() {
         complex a;
+        complex b;
         a = 1 + 2j;
-        PrintComp(a);
+        b = a;
+        a = #3;
+        PrintComp(a, b);
     }
 }
