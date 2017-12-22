@@ -105,7 +105,7 @@ public class TypeCheck extends Tree.Visitor {
 			break;
 		case Tree.IMG:
 			literal.type = BaseType.COMPLEX;
-			literal.value = new Complex((int)literal.value);
+			literal.value = new Complex(0, (int)literal.value);
 			break;
 		case Tree.STRING:
 			literal.type = BaseType.STRING;

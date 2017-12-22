@@ -394,11 +394,15 @@ public class Translater {
 	}
 
 	public Temp genLoadComplex(Complex value) {
+		Temp real = genLoadImm4(value.getReal());
+		Temp image = genLoadImm4(value.getImage());
+		return genNewComplex(real, image);
+	}
+
+	public Temp genNewComplex(Temp real, Temp image) {
 		Temp size = genLoadImm4(OffsetCounter.DOUBLE_SIZE);
 		genParm(size);
 		Temp obj = genIntrinsicCall(Intrinsic.ALLOCATE);
-		Temp real = genLoadImm4(value.getReal());
-		Temp image = genLoadImm4(value.getImage());
 		genStore(real, obj, 0);
 		genStore(image, obj, 4);
 		return obj;

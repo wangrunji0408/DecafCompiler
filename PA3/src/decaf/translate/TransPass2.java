@@ -63,6 +63,28 @@ public class TransPass2 extends Tree.Visitor {
 	public void visitBinary(Tree.Binary expr) {
 		expr.left.accept(this);
 		expr.right.accept(this);
+		if(expr.left.type.equal(BaseType.COMPLEX) && expr.right.type.equal(BaseType.COMPLEX)) {
+			Temp c1 = expr.left.val;
+			Temp c2 = expr.right.val;
+			Temp r1 = tr.genLoad(c1, 0);
+			Temp r2 = tr.genLoad(c2, 0);
+			Temp i1 = tr.genLoad(c1, 4);
+			Temp i2 = tr.genLoad(c2, 4);
+			Temp r, i;
+			switch (expr.tag) {
+				case Tree.PLUS:
+					r = tr.genAdd(r1, r2);
+					i = tr.genAdd(i1, i2);
+					expr.val = tr.genNewComplex(r, i);
+					break;
+				case Tree.MINUS:
+					r = tr.genSub(tr.genMul(r1, r2), tr.genMul(i1, i2));
+					i = tr.genAdd(tr.genMul(r1, i2), tr.genMul(i1, r2));
+					expr.val = tr.genNewComplex(r, i);
+					break;
+			}
+			return;
+		}
 		switch (expr.tag) {
 		case Tree.PLUS:
 			expr.val = tr.genAdd(expr.left.val, expr.right.val);
@@ -181,12 +203,13 @@ public class TransPass2 extends Tree.Visitor {
 			expr.val = tr.genLNot(expr.expr.val);
 			break;
 		case Tree.RE:
+			expr.val = tr.genLoad(expr.expr.val, 0);
 			break;
 		case Tree.IM:
+			expr.val = tr.genLoad(expr.expr.val, 4);
 			break;
 		case Tree.COMPCAST:
-			expr.val = tr.genLoadComplex(new Complex());
-			tr.genStore(expr.expr.val, expr.val, 0);
+			expr.val = tr.genNewComplex(expr.expr.val, tr.genLoadImm4(0));
 			break;
 		}
 	}
@@ -241,6 +264,25 @@ public class TransPass2 extends Tree.Visitor {
 			} else if (r.type.equal(BaseType.STRING)) {
 				tr.genIntrinsicCall(Intrinsic.PRINT_STRING);
 			}
+		}
+	}
+
+	@Override
+	public void visitPrintComp(Tree.PrintComp printStmt) {
+		for (Tree.Expr r : printStmt.exprs) {
+			r.accept(this);
+			Temp real = tr.genLoad(r.val, 0);
+			tr.genParm(real);
+			tr.genIntrinsicCall(Intrinsic.PRINT_INT);
+			Temp plus = tr.genLoadStrConst("+");
+			tr.genParm(plus);
+			tr.genIntrinsicCall(Intrinsic.PRINT_STRING);
+			Temp image = tr.genLoad(r.val, 4);
+			tr.genParm(image);
+			tr.genIntrinsicCall(Intrinsic.PRINT_INT);
+			Temp j = tr.genLoadStrConst("j");
+			tr.genParm(j);
+			tr.genIntrinsicCall(Intrinsic.PRINT_STRING);
 		}
 	}
 
