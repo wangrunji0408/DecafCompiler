@@ -2,6 +2,7 @@ package decaf.translate;
 
 import java.util.Stack;
 
+import decaf.symbol.Class;
 import decaf.tree.Tree;
 import decaf.backend.OffsetCounter;
 import decaf.machdesc.Intrinsic;
@@ -17,6 +18,8 @@ public class TransPass2 extends Tree.Visitor {
 
 	private Temp currentThis;
 
+	private Class currentClass;
+
 	private Stack<Label> loopExits;
 
 	public TransPass2(Translater tr) {
@@ -26,6 +29,7 @@ public class TransPass2 extends Tree.Visitor {
 
 	@Override
 	public void visitClassDef(Tree.ClassDef classDef) {
+		currentClass = classDef.symbol;
 		for (Tree f : classDef.fields) {
 			f.accept(this);
 		}
@@ -240,6 +244,11 @@ public class TransPass2 extends Tree.Visitor {
 	}
 
 	@Override
+	public void visitSuperExpr(Tree.SuperExpr superExpr) {
+		superExpr.val = currentThis;
+	}
+
+	@Override
 	public void visitReadIntExpr(Tree.ReadIntExpr readIntExpr) {
 		readIntExpr.val = tr.genIntrinsicCall(Intrinsic.READ_INT);
 	}
@@ -351,7 +360,13 @@ public class TransPass2 extends Tree.Visitor {
 						callExpr.symbol.getFuncty().label, callExpr.symbol
 								.getReturnType());
 			} else {
-				Temp vt = tr.genLoad(callExpr.receiver.val, 0);
+				Temp vt;
+				if(callExpr.receiver instanceof Tree.SuperExpr)
+					vt = tr.genLoadVTable(currentClass.getParent().getVtable());
+				else if(callExpr.receiver instanceof Tree.ThisExpr)
+					vt = tr.genLoadVTable(currentClass.getVtable());
+				else
+					vt = tr.genLoad(callExpr.receiver.val, 0);
 				Temp func = tr.genLoad(vt, callExpr.symbol.getOffset());
 				callExpr.val = tr.genIndirectCall(func, callExpr.symbol
 						.getReturnType());
