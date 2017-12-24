@@ -401,11 +401,23 @@ public class Translater {
 
 	public Temp genNewComplex(Temp real, Temp image) {
 		Temp size = genLoadImm4(OffsetCounter.DOUBLE_SIZE);
-		genParm(size);
-		Temp obj = genIntrinsicCall(Intrinsic.ALLOCATE);
+		Temp obj = genAlloc(size);
 		genStore(real, obj, 0);
 		genStore(image, obj, 4);
 		return obj;
+	}
+
+	public Temp genAlloc(Temp size) {
+		genParm(size);
+		return genIntrinsicCall(Intrinsic.ALLOCATE);
+	}
+
+	public void genMemcpy(Temp dst, Temp src, int size) {
+		assert (size % 4 == 0);
+		for(int i=0; i<size / 4; ++i) {
+			Temp t = genLoad(src, i * OffsetCounter.WORD_SIZE);
+			genStore(t, dst, i * OffsetCounter.WORD_SIZE);
+		}
 	}
 
 	public void genNewForClass(Class c) {

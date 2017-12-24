@@ -10,6 +10,7 @@ import decaf.symbol.Variable;
 import decaf.tac.Label;
 import decaf.tac.Temp;
 import decaf.type.BaseType;
+import decaf.type.ClassType;
 import decaf.utils.Complex;
 
 public class TransPass2 extends Tree.Visitor {
@@ -267,6 +268,16 @@ public class TransPass2 extends Tree.Visitor {
 			tr.genReturn(null);
 		}
 
+	}
+
+	@Override
+	public void visitSCopy(Tree.SCopy scopy) {
+		scopy.expr.accept(this);
+		Temp obj = scopy.expr.val;
+		int objSize = ((ClassType)scopy.expr.type).getSymbol().getSize();
+		Temp newObj = tr.genAlloc( tr.genLoadImm4( objSize ) );
+		tr.genMemcpy(newObj, obj, objSize);
+		scopy.val = newObj;
 	}
 
 	@Override
