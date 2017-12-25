@@ -347,6 +347,16 @@ public class Translater {
 		append(Tac.genParm(parm));
 	}
 
+	public void genCheckDivByZero(Temp x) {
+		Label next = Label.createLabel();
+		genBnez(x, next);
+		Temp msg = genLoadStrConst(RuntimeError.DIVISION_BY_ZERO);
+		genParm(msg);
+		genIntrinsicCall(Intrinsic.PRINT_STRING);
+		genIntrinsicCall(Intrinsic.HALT);
+		genMark(next);
+	}
+
 	public void genCheckArrayIndex(Temp array, Temp index) {
 		Temp length = genLoad(array, -OffsetCounter.WORD_SIZE);
 		Temp cond = genLes(index, length);
