@@ -281,6 +281,13 @@ public class TransPass2 extends Tree.Visitor {
 	}
 
 	@Override
+	public void visitDCopy(Tree.DCopy dcopy) {
+		dcopy.expr.accept(this);
+		Class c = ((ClassType)dcopy.type).getSymbol();
+		dcopy.val = tr.genCallDCopy(c, dcopy.expr.val);
+	}
+
+	@Override
 	public void visitPrint(Tree.Print printStmt) {
 		for (Tree.Expr r : printStmt.exprs) {
 			r.accept(this);

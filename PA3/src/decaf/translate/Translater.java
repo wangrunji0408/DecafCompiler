@@ -20,6 +20,7 @@ import decaf.tac.Tac;
 import decaf.tac.Temp;
 import decaf.tac.VTable;
 import decaf.type.BaseType;
+import decaf.type.ClassType;
 import decaf.type.Type;
 import decaf.utils.Complex;
 
@@ -131,7 +132,7 @@ public class Translater {
 		VTable vtable = new VTable();
 		vtable.className = c.getName();
 		vtable.name = "_" + c.getName();
-		vtable.entries = new Label[c.getNumNonStaticFunc()];
+		vtable.entries = new Label[c.getNumNonStaticFunc() + 1]; // +1 for dcopy method
 		fillVTableEntries(vtable, c.getAssociatedScope());
 		c.setVtable(vtable);
 		vtables.add(vtable);
@@ -141,13 +142,14 @@ public class Translater {
 		if (cs.getParentScope() != null) {
 			fillVTableEntries(vt, cs.getParentScope());
 		}
+		vt.entries[0] = Label.createLabel("_" + cs.getOwner().getName() + ".dcopy", true);
 
 		Iterator<Symbol> iter = cs.iterator();
 		while (iter.hasNext()) {
 			Symbol sym = iter.next();
 			if (sym.isFunction() && !((Function) sym).isStatik()) {
 				Function func = (Function) sym;
-				vt.entries[func.getOrder()] = func.getFuncty().label;
+				vt.entries[func.getOrder() + 1] = func.getFuncty().label;
 			}
 		}
 	}
@@ -413,8 +415,8 @@ public class Translater {
 	}
 
 	public void genMemcpy(Temp dst, Temp src, int size) {
-		assert (size % 4 == 0);
-		for(int i=0; i<size / 4; ++i) {
+		assert (size % OffsetCounter.WORD_SIZE == 0);
+		for(int i=0; i<size / OffsetCounter.WORD_SIZE; ++i) {
 			Temp t = genLoad(src, i * OffsetCounter.WORD_SIZE);
 			genStore(t, dst, i * OffsetCounter.WORD_SIZE);
 		}
@@ -454,6 +456,48 @@ public class Translater {
 		genStore(genLoadVTable(c.getVtable()), newObj, 0);
 		genReturn(newObj);
 		endFunc();
+	}
+
+	public void genDCopyForClass(Class c) {
+		Temp self = Temp.createTempI4();
+		currentFuncty = new Functy();
+		currentFuncty.label = Label.createLabel(
+				"_" + c.getName() + ".dcopy", true);
+		currentFuncty.paramMemo = Tac.genMemo(self.name + ":4");
+		genMark(currentFuncty.label);
+
+		Temp newObj;
+
+		// Call super.dcopy if has super
+		newObj = genAlloc(genLoadImm4(c.getSize()));
+		genStore(genLoadVTable(c.getVtable()), newObj, 0);
+
+		for(Class c0 = c; c0 != null; c0 = c0.getParent()) {
+			Iterator<Symbol> iter = c0.getAssociatedScope().iterator();
+			while(iter.hasNext()) {
+				Symbol sym = iter.next();
+				if(!sym.isVariable())
+					continue;
+				Variable var = (Variable)sym;
+				Temp newValue = genLoad(self, var.getOffset());
+				if(sym.getType().isClassType()) {
+					Class c1 = ((ClassType)sym.getType()).getSymbol();
+					newValue = genCallDCopy(c1, newValue);
+				}
+				genStore(newValue, newObj, var.getOffset());
+			}
+		}
+		genReturn(newObj);
+		endFunc();
+	}
+
+	Temp genCallDCopy(Class c, Temp self) {
+		Temp t = genLoadVTable(c.getVtable());
+		Temp func = genLoad(t, OffsetCounter.WORD_SIZE * 2);
+		genParm(self);
+		return genIndirectCall(func, BaseType.INT);
+//		genParm(self);
+//		return genDirectCall(Label.createLabel("_" + c.getName() + ".dcopy", true), BaseType.INT);
 	}
 
 	public Temp genInstanceof(Temp instance, Class c) {

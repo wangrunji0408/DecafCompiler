@@ -32,6 +32,7 @@ public class TransPass1 extends Tree.Visitor {
 		for (Tree.ClassDef cd : program.classes) {
 			tr.createVTable(cd.symbol);
 			tr.genNewForClass(cd.symbol);
+			tr.genDCopyForClass(cd.symbol);
 		}
 		for (Tree.ClassDef cd : program.classes) {
 			if (cd.parent != null) {
@@ -66,7 +67,7 @@ public class TransPass1 extends Tree.Visitor {
 	public void visitMethodDef(Tree.MethodDef funcDef) {
 		Function func = funcDef.symbol;
 		if (!func.isStatik()) {
-			func.setOffset(2 * OffsetCounter.POINTER_SIZE + func.getOrder()
+			func.setOffset(3 * OffsetCounter.POINTER_SIZE + func.getOrder()
 					* OffsetCounter.POINTER_SIZE);
 		}
 		tr.createFuncty(func);
