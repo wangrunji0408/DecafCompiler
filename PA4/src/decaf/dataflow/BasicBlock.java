@@ -36,13 +36,13 @@ public class BasicBlock {
 
     public boolean mark;
 
-    public Set<Temp> def;
+    public Map<Temp, Set<Integer>> def;
 
-    public Set<Temp> liveUse;
+    public Map<Temp, Set<Integer>> liveUse;
 
-    public Set<Temp> liveIn;
+    public Map<Temp, Set<Integer>> liveIn;
 
-    public Set<Temp> liveOut;
+    public Map<Temp, Set<Integer>> liveOut;
 
     public Set<Temp> saves;
 
@@ -57,10 +57,10 @@ public class BasicBlock {
     private Map<Pair, Set<Integer>> DUChain;
 
     public BasicBlock() {
-        def = new TreeSet<Temp>(Temp.ID_COMPARATOR);
-        liveUse = new TreeSet<Temp>(Temp.ID_COMPARATOR);
-        liveIn = new TreeSet<Temp>(Temp.ID_COMPARATOR);
-        liveOut = new TreeSet<Temp>(Temp.ID_COMPARATOR);
+        def = new TreeMap<>(Temp.ID_COMPARATOR);
+        liveUse = new TreeMap<>(Temp.ID_COMPARATOR);
+        liveIn = new TreeMap<>(Temp.ID_COMPARATOR);
+        liveOut = new TreeMap<>(Temp.ID_COMPARATOR);
         next = new int[2];
         asms = new ArrayList<Asm>();
 
@@ -72,6 +72,28 @@ public class BasicBlock {
             tac.id = IDAllocator.apply();
         }
         endId = IDAllocator.apply();
+    }
+
+    void addLiveUse(Temp var, int pos) {
+        Set<Integer> useSet = liveUse.get(var);
+        if(useSet == null) {
+            useSet = new TreeSet<>();
+            useSet.add(pos);
+            liveUse.put(var, useSet);
+        } else {
+            useSet.add(pos);
+        }
+    }
+
+    void addDef(Temp var, int pos) {
+        Set<Integer> useSet = def.get(var);
+        if(useSet == null) {
+            useSet = new TreeSet<>();
+            useSet.add(pos);
+            def.put(var, useSet);
+        } else {
+            useSet.add(pos);
+        }
     }
 
     public void computeDefAndLiveUse() {
@@ -92,15 +114,15 @@ public class BasicBlock {
                 case LES:
                 /* use op1 and op2, def op0 */
                     if (tac.op1.lastVisitedBB != bbNum) {
-                        liveUse.add(tac.op1);
-                        tac.op1.lastVisitedBB = bbNum;
+                        addLiveUse(tac.op1, tac.id);
+//                        tac.op1.lastVisitedBB = bbNum;
                     }
                     if (tac.op2.lastVisitedBB != bbNum) {
-                        liveUse.add(tac.op2);
-                        tac.op2.lastVisitedBB = bbNum;
+                        addLiveUse(tac.op2, tac.id);
+//                        tac.op2.lastVisitedBB = bbNum;
                     }
                     if (tac.op0.lastVisitedBB != bbNum) {
-                        def.add(tac.op0);
+                        addDef(tac.op0, tac.id);
                         tac.op0.lastVisitedBB = bbNum;
                     }
                     break;
@@ -111,12 +133,12 @@ public class BasicBlock {
                 case LOAD:
 				/* use op1, def op0 */
                     if (tac.op1.lastVisitedBB != bbNum) {
-                        liveUse.add(tac.op1);
-                        tac.op1.lastVisitedBB = bbNum;
+                        addLiveUse(tac.op1, tac.id);
+//                        tac.op1.lastVisitedBB = bbNum;
                     }
                     if (tac.op0 != null && tac.op0.lastVisitedBB != bbNum) {  // in INDIRECT_CALL with return type VOID,
                         // tac.op0 is null
-                        def.add(tac.op0);
+                        addDef(tac.op0, tac.id);
                         tac.op0.lastVisitedBB = bbNum;
                     }
                     break;
@@ -128,26 +150,26 @@ public class BasicBlock {
 				/* def op0 */
                     if (tac.op0 != null && tac.op0.lastVisitedBB != bbNum) {  // in DIRECT_CALL with return type VOID,
                         // tac.op0 is null
-                        def.add(tac.op0);
+                        addDef(tac.op0, tac.id);
                         tac.op0.lastVisitedBB = bbNum;
                     }
                     break;
                 case STORE:
 				/* use op0 and op1*/
                     if (tac.op0.lastVisitedBB != bbNum) {
-                        liveUse.add(tac.op0);
-                        tac.op0.lastVisitedBB = bbNum;
+                        addLiveUse(tac.op0, tac.id);
+//                        tac.op0.lastVisitedBB = bbNum;
                     }
                     if (tac.op1.lastVisitedBB != bbNum) {
-                        liveUse.add(tac.op1);
-                        tac.op1.lastVisitedBB = bbNum;
+                        addLiveUse(tac.op1, tac.id);
+//                        tac.op1.lastVisitedBB = bbNum;
                     }
                     break;
                 case PARM:
 				/* use op0 */
                     if (tac.op0.lastVisitedBB != bbNum) {
-                        liveUse.add(tac.op0);
-                        tac.op0.lastVisitedBB = bbNum;
+                        addLiveUse(tac.op0, tac.id);
+//                        tac.op0.lastVisitedBB = bbNum;
                     }
                     break;
                 default:
@@ -156,10 +178,10 @@ public class BasicBlock {
             }
         }
         if (var != null && var.lastVisitedBB != bbNum) {
-            liveUse.add(var);
-            var.lastVisitedBB = bbNum;
+            addLiveUse(var, endId);
+//            var.lastVisitedBB = bbNum;
         }
-        liveIn.addAll(liveUse);
+        liveIn.putAll(liveUse);
     }
 
     public void analyzeLiveness() {
@@ -168,11 +190,11 @@ public class BasicBlock {
         Tac tac = tacList;
         for (; tac.next != null; tac = tac.next) ;
 
-        tac.liveOut = new HashSet<Temp>(liveOut);
+        tac.liveOut = new HashMap<>(liveOut);
         if (var != null)
-            tac.liveOut.add(var);
+            tac.addLiveOut(var, endId);
         for (; tac != tacList; tac = tac.prev) {
-            tac.prev.liveOut = new HashSet<Temp>(tac.liveOut);
+            tac.prev.liveOut = new HashMap<>(tac.liveOut);
             switch (tac.opc) {
                 case ADD:
                 case SUB:
@@ -189,8 +211,8 @@ public class BasicBlock {
                 case LES:
 				/* use op1 and op2, def op0 */
                     tac.prev.liveOut.remove(tac.op0);
-                    tac.prev.liveOut.add(tac.op1);
-                    tac.prev.liveOut.add(tac.op2);
+                    tac.prev.addLiveOut(tac.op1, tac.id);
+                    tac.prev.addLiveOut(tac.op2, tac.id);
                     break;
                 case NEG:
                 case LNOT:
@@ -199,7 +221,7 @@ public class BasicBlock {
                 case LOAD:
 				/* use op1, def op0 */
                     tac.prev.liveOut.remove(tac.op0);
-                    tac.prev.liveOut.add(tac.op1);
+                    tac.prev.addLiveOut(tac.op1, tac.id);
                     break;
                 case LOAD_VTBL:
                 case DIRECT_CALL:
@@ -211,19 +233,23 @@ public class BasicBlock {
                     break;
                 case STORE:
 				/* use op0 and op1*/
-                    tac.prev.liveOut.add(tac.op0);
-                    tac.prev.liveOut.add(tac.op1);
+                    tac.prev.addLiveOut(tac.op0, tac.id);
+                    tac.prev.addLiveOut(tac.op1, tac.id);
                     break;
                 case BEQZ:
                 case BNEZ:
                 case PARM:
 				/* use op0 */
-                    tac.prev.liveOut.add(tac.op0);
+                    tac.prev.addLiveOut(tac.op0, tac.id);
                     break;
                 default:
 				/* BRANCH MEMO MARK PARM*/
                     break;
             }
+        }
+        for (Tac tac0 = tacList; tac0 != null; tac0 = tac0.next) {
+            int pos = tac0.id;
+            tac0.liveOut.forEach((key, value) -> DUChain.put(new Pair(pos, key), value));
         }
     }
 
@@ -256,13 +282,13 @@ public class BasicBlock {
 
     public void printLivenessTo(PrintWriter pw) {
         pw.println("BASIC BLOCK " + bbNum + " : ");
-        pw.println("  Def     = " + toString(def));
-        pw.println("  liveUse = " + toString(liveUse));
-        pw.println("  liveIn  = " + toString(liveIn));
-        pw.println("  liveOut = " + toString(liveOut));
+        pw.println("  Def     = " + toString(def.keySet()));
+        pw.println("  liveUse = " + toString(liveUse.keySet()));
+        pw.println("  liveIn  = " + toString(liveIn.keySet()));
+        pw.println("  liveOut = " + toString(liveOut.keySet()));
 
         for (Tac t = tacList; t != null; t = t.next) {
-            pw.println("    " + t + " " + toString(t.liveOut));
+            pw.println("    " + t + " " + toString(t.liveOut.keySet()));
         }
 
         switch (endKind) {

@@ -72,7 +72,7 @@ public class RegisterAllocator {
 				}
 				frameManager.finishActual();
 				tac.saves = new HashSet<Temp>();
-				for (Temp t : tac.liveOut) {
+				for (Temp t : tac.liveOut.keySet()) {
 					if (t.reg != null && t.equals(t.reg.var)
 							&& !t.equals(tac.op0)) {
 						frameManager.findSlot(t);
@@ -102,7 +102,7 @@ public class RegisterAllocator {
 		}
 
 		bb.saves = new HashSet<Temp>();
-		for (Temp t : bb.liveOut) {
+		for (Temp t : bb.liveOut.keySet()) {
 			if (t.reg != null && t.equals(t.reg.var)) {
 				frameManager.findSlot(t);
 				bb.saves.add(t);
@@ -226,10 +226,10 @@ public class RegisterAllocator {
 				tac = tac.prev;
 			}
 			if (tac != null) {
-				return tac.liveOut.contains(temp);
+				return tac.liveOut.containsKey(temp);
 			}
 		}
-		return bb.liveIn.contains(temp);
+		return bb.liveIn.containsKey(temp);
 	}
 
 	private void findRegForWrite(Tac tac, Temp temp) {

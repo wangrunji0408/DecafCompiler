@@ -1,6 +1,8 @@
 package decaf.tac;
 
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import decaf.utils.MiscUtils;
 
@@ -37,10 +39,21 @@ public class Tac {
 
 	public int bbNum;
 
-	public Set<Temp> liveOut;
+	public Map<Temp, Set<Integer>> liveOut;
 	
 	public Set<Temp> saves;
-	
+
+	public void addLiveOut(Temp var, int pos) {
+		Set<Integer> useSet = liveOut.get(var);
+		if(useSet == null) {
+			useSet = new TreeSet<>();
+			useSet.add(pos);
+			liveOut.put(var, useSet);
+		} else {
+			useSet.add(pos);
+		}
+	}
+
 	private static int allocateId() {
 		++cnt;
 		return cnt;

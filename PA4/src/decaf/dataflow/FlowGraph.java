@@ -1,15 +1,12 @@
 package decaf.dataflow;
 
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import decaf.tac.Functy;
 import decaf.tac.Tac;
 import decaf.tac.Tac.Kind;
+import decaf.tac.Temp;
 
 public class FlowGraph implements Iterable<BasicBlock> {
 
@@ -172,6 +169,20 @@ public class FlowGraph implements Iterable<BasicBlock> {
         return bbs.size();
     }
 
+    private boolean _changed;
+    boolean addLiveTo(Map<Temp, Set<Integer>> dst, Map<Temp, Set<Integer>> src) {
+        _changed = false;
+        src.forEach((key, value) -> {
+            if(dst.containsKey(key))
+                _changed |= dst.get(key).addAll(value);
+            else {
+                dst.put(key, new TreeSet<>(value));
+                _changed = true;
+            }
+        });
+        return _changed;
+    }
+
     public void analyzeLiveness() {
         for (BasicBlock bb : bbs) {
             bb.computeDefAndLiveUse();
@@ -181,13 +192,12 @@ public class FlowGraph implements Iterable<BasicBlock> {
             changed = false;
             for (BasicBlock bb : bbs) {
                 for (int i = 0; i < 2; i++) {
-                    bb.liveOut.addAll(bbs.get(bb.next[i]).liveIn);
+                    changed |= addLiveTo(bb.liveOut, bbs.get(bb.next[i]).liveIn);
                 }
-                bb.liveOut.removeAll(bb.def);
-                if (bb.liveIn.addAll(bb.liveOut))
-                    changed = true;
+                bb.def.keySet().forEach(k -> bb.liveOut.remove(k));
+                changed |= addLiveTo(bb.liveIn, bb.liveOut);
                 for (int i = 0; i < 2; i++) {
-                    bb.liveOut.addAll(bbs.get(bb.next[i]).liveIn);
+                    addLiveTo(bb.liveOut, bbs.get(bb.next[i]).liveIn);
                 }
             }
         } while (changed);
