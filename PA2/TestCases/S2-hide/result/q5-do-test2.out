@@ -1,0 +1,1 @@
+*** Error at (10,6): The condition of Do Stmt requestd type bool but int given

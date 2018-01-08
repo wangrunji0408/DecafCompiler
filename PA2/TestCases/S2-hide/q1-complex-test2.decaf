@@ -1,0 +1,23 @@
+class Main {
+    static void main() {
+			complex ca;
+			complex cb;
+			complex cc;
+			complex cd;
+			int m;
+			int n;
+			string x;
+			ca = 8j;
+			//for @
+			m = @(x+ca);
+			m = @(1+0j);
+			//for $
+			m = $(x+ca);
+			//for #
+			cb =	#(m+x);
+			cc = #89;
+			cd = m + n;
+			cd = m * n;
+			PrintComp(ca + x,cb, m);
+    }
+}

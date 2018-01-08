@@ -1,0 +1,43 @@
+GLOBAL SCOPE:
+    (1,1) -> class Main
+    (16,1) -> class people
+    (25,1) -> class student : people
+    (40,1) -> class animal
+    CLASS SCOPE OF 'Main':
+        (2,17) -> static function main : void
+        FORMAL SCOPE OF 'main':
+            LOCAL SCOPE:
+                (3,8) -> variable i : int
+                (4,17) -> variable a : class : people
+                (5,17) -> variable b : class : people
+                (6,17) -> variable c : class : people
+                (7,18) -> variable d : class : student
+                (8,17) -> variable x : class : animal
+    CLASS SCOPE OF 'people':
+        (17,6) -> variable age : int
+        (18,9) -> variable name : string
+        (20,6) -> function getage : class : people->int
+        FORMAL SCOPE OF 'getage':
+            (20,6) -> variable @this : class : people
+            LOCAL SCOPE:
+    CLASS SCOPE OF 'student':
+        (26,6) -> variable stuid : int
+        (28,6) -> function BeMan : class : student->int->string->int
+        (35,6) -> function getid : class : student->int
+        FORMAL SCOPE OF 'BeMan':
+            (28,6) -> variable @this : class : student
+            (28,16) -> variable @age : int
+            (28,28) -> variable @name : string
+            LOCAL SCOPE:
+                (29,7) -> variable a : int
+                (30,7) -> variable b : int
+        FORMAL SCOPE OF 'getid':
+            (35,6) -> variable @this : class : student
+            LOCAL SCOPE:
+    CLASS SCOPE OF 'animal':
+        (41,6) -> variable age : int
+        (42,9) -> variable type : string
+        (44,9) -> function gettype : class : animal->string
+        FORMAL SCOPE OF 'gettype':
+            (44,9) -> variable @this : class : animal
+            LOCAL SCOPE:

@@ -1,0 +1,23 @@
+class Main {
+    static void main() {
+			complex ab;
+			complex cd;
+			complex ba;
+			string s;
+			int a;
+			int b;
+			int c;
+			int d;
+			ba = 12j;
+			ba = 3 + 45j;
+			a = @ab;
+			b = $ab;
+			cd = #(a + b);
+			PrintComp(ab + cd);
+			PrintComp(ab + cd, ba);
+			cd = ab / ba;
+			cd = ab > ba;
+			cd = ab / a;
+			cd = ab / s;
+    }
+}

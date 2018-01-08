@@ -324,7 +324,7 @@ public class TypeCheck extends Tree.Visitor {
 	@Override
 	public void visitDCopy(Tree.DCopy dcopy) {
 		dcopy.expr.accept(this);
-		if(!dcopy.expr.type.isClassType()) {
+		if(dcopy.expr.type != BaseType.ERROR && !dcopy.expr.type.isClassType()) {
 			issueError(new CopyExprIsNotClassTypeError(dcopy.getLocation(), dcopy.expr.type.toString()));
 			dcopy.type = BaseType.ERROR;
 			return;
@@ -335,7 +335,7 @@ public class TypeCheck extends Tree.Visitor {
 	@Override
 	public void visitSCopy(Tree.SCopy scopy) {
 		scopy.expr.accept(this);
-		if(!scopy.expr.type.isClassType()) {
+		if(scopy.expr.type != BaseType.ERROR && !scopy.expr.type.isClassType()) {
 			issueError(new CopyExprIsNotClassTypeError(scopy.getLocation(), scopy.expr.type.toString()));
 			scopy.type = BaseType.ERROR;
 			return;
@@ -588,9 +588,7 @@ public class TypeCheck extends Tree.Visitor {
 					keys.add(key);
 			}
 
-			if(caseExpr.type == null)
-				caseExpr.type = acase.value.type;
-			if(caseExpr.type != BaseType.ERROR && caseExpr.type != acase.value.type) {
+			if(caseExpr.type != BaseType.ERROR && acase.value.type != BaseType.ERROR && caseExpr.type != acase.value.type) {
 				issueError(new InconsistentCaseValueTypeError(acase.getLocation(),
 						caseExpr.type.toString(), acase.value.type.toString()));
 				caseExpr.type = BaseType.ERROR;
@@ -803,6 +801,7 @@ public class TypeCheck extends Tree.Visitor {
 		if (!compatible) {
 			issueError(new IncompatBinOpError(location, left.type.toString(),
 					Parser.opStr(op), right.type.toString()));
+			returnType = BaseType.ERROR;
 		}
 		return returnType;
 	}

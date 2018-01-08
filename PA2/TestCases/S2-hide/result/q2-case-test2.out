@@ -1,0 +1,9 @@
+*** Error at (17,13): incompatible case expr: bool given, but int expected
+*** Error at (20,10): condition is not unique
+*** Error at (33,10): incompatible case expr: complex given, but int expected
+*** Error at (36,7): incompatible operands: complex = int
+*** Error at (42,7): incompatible operands: complex = int
+*** Error at (44,18): incompatible operands: int + bool
+*** Error at (48,16): incompatible case expr: complex given, but int expected
+*** Error at (50,5): condition is not unique
+*** Error at (51,5): type: complex is different with other expr's type int

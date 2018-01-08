@@ -1,0 +1,28 @@
+class Main {
+    static void main(){
+    	int n;
+      int a;
+      int b;
+			bool flag;
+			complex ca;
+      a=2;
+      b=3;
+      a = case(n*3){
+  	     0:a+b;
+         3:a+3;
+         9:b*2+6;
+         default:100;};
+			a = case(n){
+				8: a+b;
+				0:  8;
+				0j: a+n;
+        default:100;};
+			a = case(n){
+  	     0:a+b;
+         3:a+3;
+         3:a+3;
+         4:ca + flag;
+         6:b*2+6;
+         default:ca + flag;};
+	}
+}

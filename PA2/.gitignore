@@ -24,4 +24,5 @@
 hs_err_pid*
 
 TestCases/S2/output/
+TestCases/S2-hide/output/
 /result/
